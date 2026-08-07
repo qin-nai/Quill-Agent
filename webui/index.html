@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quill Agent</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 统一图标库:Lucide 风格线稿,不用 emoji -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="i-menu" viewBox="0 0 24 24"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect width="14" height="14" x="5" y="5" rx="2"/></symbol>
+  <symbol id="i-paperclip" viewBox="0 0 24 24"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></symbol>
+  <symbol id="i-chev-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-chev-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-chev-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></symbol>
+  <symbol id="i-file-text" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></symbol>
+  <symbol id="i-file-plus" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M9 15h6"/><path d="M12 12v6"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+  <symbol id="i-folder-open" viewBox="0 0 24 24"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+  <symbol id="i-panel" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></symbol>
+</svg>
+
+<div class="scrim" id="scrim" hidden></div>
+
+<!-- 会话列表:平板=左侧栏,手机=滑出抽屉 -->
+<aside class="sessions" id="sessions">
+  <div class="sessions-head">
+    <div class="brand"><span class="brand-dot" aria-hidden="true"></span>Hermes</div>
+    <button class="iconbtn tablet-only" id="collapseSessions" title="收起会话栏" aria-label="收起会话栏"><svg><use href="#i-panel"/></svg></button>
+  </div>
+  <div class="sessions-list" id="sessionList" role="listbox" aria-label="会话列表"></div>
+  <button class="btn-primary btn-block" id="newSession"><svg><use href="#i-plus"/></svg><span>新建会话</span></button>
+</aside>
+
+<!-- 对话区 -->
+<main class="chat">
+  <header class="topbar">
+    <button class="iconbtn phone-only" id="openSessions" aria-label="打开会话列表"><svg><use href="#i-menu"/></svg></button>
+    <h1 class="topbar-title" id="sessionTitle">修复登录页样式问题</h1>
+    <button class="iconbtn" id="openSettings" aria-label="设置"><svg><use href="#i-settings"/></svg></button>
+    <button class="iconbtn" id="openFiletree" aria-label="查看文件树"><svg><use href="#i-file"/></svg></button>
+  </header>
+
+  <div class="stream" id="stream" aria-live="polite"></div>
+
+  <footer class="inputbar-wrap">
+    <div class="composer-tools">
+      <button class="chip" id="modelChip" title="点击切换模型" aria-label="当前模型">
+        <span class="chip-dot" aria-hidden="true"></span>
+        <span id="modelChipLabel">deepseek-v4-flash</span>
+        <span class="chip-ctx" id="modelChipCtx"></span>
+      </button>
+      <div class="popover" id="modelPopover" hidden>
+        <div class="pop-label">模型类型</div>
+        <div class="model-list" id="popoverModels"></div>
+        <div class="pop-label">思考深度</div>
+        <div class="depth-row">
+          <input type="range" id="depthSlider" min="1" max="5" step="1" value="3" aria-label="思考深度">
+          <span class="depth-value" id="depthValue">Medium</span>
+        </div>
+      </div>
+    </div>
+    <div class="inputbar" id="inputbar">
+      <button class="iconbtn input-icn" id="attach" aria-label="添加附件"><svg><use href="#i-paperclip"/></svg></button>
+      <textarea id="input" rows="1" placeholder="问点什么,或描述要改的代码…" aria-label="消息输入框"></textarea>
+      <button class="sendbtn" id="send" aria-label="发送" disabled><svg><use href="#i-send"/></svg></button>
+      <button class="stopbtn" id="stop" aria-label="停止生成" hidden><svg><use href="#i-stop"/></svg></button>
+    </div>
+    <p class="input-hint">Enter 发送 · Shift+Enter 换行</p>
+  </footer>
+</main>
+
+<!-- 文件树抽屉 -->
+<aside class="drawer right" id="filetree" hidden>
+  <div class="drawer-head">
+    <h2>文件</h2>
+    <button class="iconbtn" id="closeFiletree" aria-label="关闭文件树"><svg><use href="#i-x"/></svg></button>
+  </div>
+  <div class="tree" id="tree"></div>
+</aside>
+
+<!-- 设置抽屉 -->
+<aside class="drawer right" id="settings" hidden>
+  <div class="drawer-head">
+    <h2>设置</h2>
+    <button class="iconbtn" id="closeSettings" aria-label="关闭设置"><svg><use href="#i-x"/></svg></button>
+  </div>
+  <div class="settings-body">
+    <div class="set-list">
+      <section class="set-item open">
+        <button class="set-item-head" type="button" aria-expanded="true">
+          <span>连接配置</span>
+          <svg class="chev"><use href="#i-chev-right"/></svg>
+        </button>
+        <div class="set-item-body">
+          <div class="field">
+            <span class="field-label">模型服务商</span>
+            <select id="provider"></select>
+          </div>
+          <div class="field">
+            <span class="field-label">模型</span>
+            <div class="model-manage">
+              <div class="model-manage-list" id="modelList"></div>
+              <div class="model-manage-add">
+                <input id="newModel" placeholder="输入模型名,回车或失焦自动添加" aria-label="新增模型">
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <span class="field-label">API Key</span>
+            <div class="keyrow">
+              <input id="apiKey" type="password" placeholder="sk-…" autocomplete="off" aria-label="API Key">
+              <button class="iconbtn" id="toggleKey" aria-label="显示或隐藏密钥"><svg><use href="#i-eye"/></svg></button>
+            </div>
+            <p class="field-hint">仅存本机钥匙串,不会上传</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="set-section">
+      <span class="set-section-label">连接测试</span>
+      <button class="btn-secondary btn-block" id="testConn"><svg><use href="#i-activity"/></svg><span>测试连接</span></button>
+      <p class="test-result" id="testResult" hidden></p>
+    </section>
+
+    <section class="set-section">
+      <span class="set-section-label">外观</span>
+      <div class="setting-row">
+        <span>深色模式</span>
+        <button class="switch" id="themeToggle" role="switch" aria-checked="false" aria-label="切换深色/浅色"><span class="thumb"></span></button>
+      </div>
+    </section>
+
+    <section class="set-section">
+      <span class="set-section-label">对话</span>
+      <div class="field">
+        <span class="field-label">字体</span>
+        <div class="seg" id="chatFont">
+          <button class="seg-opt active" type="button" data-font="ui">系统</button>
+          <button class="seg-opt" type="button" data-font="mono">等宽</button>
+        </div>
+      </div>
+      <div class="field">
+        <span class="field-label">字号</span>
+        <div class="seg" id="chatFsSeg">
+          <button class="seg-opt" type="button" data-fs="14">小</button>
+          <button class="seg-opt active" type="button" data-fs="16">中</button>
+          <button class="seg-opt" type="button" data-fs="18">大</button>
+          <button class="seg-opt" type="button" data-fs="custom">自定义</button>
+        </div>
+        <div class="fs-custom" id="chatFsCustom" hidden>
+          <input type="number" id="chatFsInput" min="12" max="24" step="1" value="16" aria-label="自定义字号">
+          <span class="fs-unit">px</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</aside>
+
+<!-- 确认弹窗:手机=底部 sheet,平板=居中对话框 -->
+<div class="confirm" id="confirm" hidden>
+  <div class="confirm-card" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="confirm-head">
+      <span class="confirm-icon"><svg><use href="#i-pencil"/></svg></span>
+      <div>
+        <h2 id="confirmTitle">写入文件</h2>
+        <p class="confirm-sub" id="confirmSub">src/main.cpp</p>
+      </div>
+    </div>
+    <div class="confirm-body">
+      <p id="confirmDesc">将覆盖 <code>src/main.cpp</code> 的现有内容</p>
+      <div class="diff" id="confirmDiff"></div>
+      <details class="reject-reason">
+        <summary>拒绝时补充原因(可选)</summary>
+        <textarea id="rejectReason" placeholder="告诉 agent 为什么,比如:先看下 README 再说" aria-label="拒绝原因"></textarea>
+      </details>
+    </div>
+    <div class="confirm-actions">
+      <button class="btn-danger" id="confirmDeny">拒绝</button>
+      <button class="btn-primary" id="confirmAllow">允许</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

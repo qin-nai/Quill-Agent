@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的第一个网页</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 48px 64px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    h1 { font-size: 42px; margin-bottom: 16px; }
+    p { font-size: 18px; opacity: 0.9; }
+    button {
+      margin-top: 28px;
+      padding: 12px 36px;
+      font-size: 16px;
+      border: none;
+      border-radius: 30px;
+      background: #fff;
+      color: #764ba2;
+      cursor: pointer;
+      font-weight: bold;
+      transition: transform 0.2s;
+    }
+    button:hover { transform: scale(1.05); }
+    #time { margin-top: 24px; font-size: 14px; opacity: 0.8; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>你好,世界!</h1>
+    <p>这是由 Hermes Agent 创建的演示网页。</p>
+    <button onclick="showTime()">点我查看当前时间</button>
+    <div id="time"></div>
+  </div>
+
+  <script>
+    function showTime() {
+      const now = new Date();
+      document.getElementById("time").innerText = "当前时间:" + now.toLocaleString();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# 构建产物
+build/
+android/app/build/
+android/app/.cxx/
+android/build/
+android/.gradle/
+
+# 数据与密钥(hermes.db 含 API key 明文,绝不提交)
+core/workspace/data/
+*.db
+
+# 安装包
+*.apk
+
+# 本机环境
+android/local.properties
+
+# IDE
+.vscode/
+.idea/
+*.swp
