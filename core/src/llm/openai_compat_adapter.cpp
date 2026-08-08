@@ -26,7 +26,10 @@ void OpenAICompatAdapter::stream(const ProviderConfig& cfg, const LlmRequest& re
     // ── 请求体:chat completions ──
     nlohmann::json body;
     body["model"] = req.model.empty() ? cfg.default_model : req.model;
+    body["max_tokens"] = 16000;  // 缺省会触发服务端默认上限,长回答被截断(DeepSeek V4 上限 384K,16000 安全)
     body["stream"] = true;
+    // 请求流式 usage:部分服务商(如 DeepSeek)只在显式请求时在末帧返回 token 统计
+    body["stream_options"] = {{"include_usage", true}};
     if (!req.tools.empty()) {
         nlohmann::json tools = nlohmann::json::array();
         for (const auto& t : req.tools)
@@ -116,20 +119,26 @@ void OpenAICompatAdapter::stream(const ProviderConfig& cfg, const LlmRequest& re
     std::map<int, ToolAccum> tool_accs;
     bool done_emitted = false;
     std::string error_body;
+    uint32_t in_tokens = 0, out_tokens = 0;  // 末帧 usage(需 stream_options.include_usage 才会返回)
 
+    // 工具参数解析失败不再静默变空对象:保留原文,让工具层/模型能看到真实失败原因。
+    // (DeepSeek V4 flash 在长提示词下会生成非法 JSON 参数,静默丢弃正是命中率低 + 行为框错乱的根源)
     auto finish = [&]() {
         if (done_emitted) return;
         for (auto& [idx, acc] : tool_accs) {
             nlohmann::json input = nlohmann::json::object();
             if (!acc.args.empty()) {
-                try { input = nlohmann::json::parse(acc.args); }
-                catch (...) { input = nlohmann::json::object(); }
+                try {
+                    input = nlohmann::json::parse(acc.args);
+                } catch (...) {
+                    input = {{"__parse_error", acc.args}};  // 保留原文,显式标记解析失败
+                }
             }
             on_event(LlmEvent{LlmEvent::Type::ToolUseComplete, {},
                               ContentBlock::make_tool_use(acc.id, acc.name, input), ""});
         }
         done_emitted = true;
-        on_event(LlmEvent{LlmEvent::Type::Done, {}, {}, ""});
+        on_event(LlmEvent{LlmEvent::Type::Done, {}, {}, "", in_tokens, out_tokens});
     };
 
     auto handle_sse = [&](const std::string& event, const std::string& data) {
@@ -138,7 +147,14 @@ void OpenAICompatAdapter::stream(const ProviderConfig& cfg, const LlmRequest& re
         try { j = nlohmann::json::parse(data); }
         catch (...) { return; }
 
-        if (!j.contains("choices")) return;
+        // usage 帧(通常末帧,choices 为空数组):记录 token 供 Done 事件带上
+        if (j.contains("usage") && j["usage"].is_object()) {
+            const auto& u = j["usage"];
+            in_tokens = u.value("prompt_tokens", in_tokens);
+            out_tokens = u.value("completion_tokens", out_tokens);
+        }
+
+        if (!j.contains("choices") || !j["choices"].is_array() || j["choices"].empty()) return;
         const auto& choice = j["choices"][0];
 
         if (choice.contains("delta")) {

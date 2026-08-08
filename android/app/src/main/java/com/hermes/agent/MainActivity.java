@@ -48,6 +48,9 @@ public class MainActivity extends Activity {
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
         s.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        s.setSupportZoom(false);          // 禁用缩放(需三行一起,防双指/系统按钮缩放)
+        s.setBuiltInZoomControls(false);
+        s.setDisplayZoomControls(false);
         webView.setWebViewClient(new WebViewClient());
         setContentView(webView);
 

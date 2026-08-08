@@ -143,6 +143,11 @@
 
 → `{ "ok": true }`;abort 回合,SSE 流随后结束。
 
+### `DELETE /api/sessions/{id}` — 删除会话
+
+→ `{ "ok": true }`;不存在 → 404 `{ "error": "session not found" }`;
+该会话有回合在跑 → 409 `{ "error": "session busy" }`(前端运行中隐藏删除入口)。
+
 ## 4. 工作区文件
 
 ### `GET /api/files/tree` — 文件树

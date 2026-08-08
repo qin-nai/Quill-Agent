@@ -57,6 +57,15 @@ int main() {
         store.update_model(s.id, "deepseek-v4-pro");
         auto s8 = store.get(s.id);
         CHECK(s8->model == "deepseek-v4-pro");
+
+        // 7) remove:删除后 get 返回 nullopt;重复删除返回 false;不影响其它会话
+        Session s9 = store.create("deepseek", "deepseek-v4-flash", "");
+        Session s10 = store.create("deepseek", "deepseek-v4-flash", "");
+        CHECK(store.get(s9.id).has_value());
+        CHECK(store.remove(s9.id));             // 真删 → true
+        CHECK(!store.get(s9.id).has_value());   // 已删 → 查不到
+        CHECK(!store.remove(s9.id));            // 重复删 → false
+        CHECK(store.get(s10.id).has_value());   // 其它会话不受影响
     }
     std::filesystem::remove(db, ec);
     if (g_fail) { std::cerr << g_fail << " 项失败\n"; return 1; }

@@ -32,6 +32,7 @@ public:
     void update_model(const std::string& id, const std::string& model);
     void append_message(const std::string& id, const Message& msg);
     void replace_messages(const std::string& id, const std::vector<Message>& msgs);
+    bool remove(const std::string& id);   // 返回是否真的删了一行(不存在 → false)
 
 private:
     std::optional<Session> get_unlocked(const std::string& id) const;

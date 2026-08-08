@@ -36,13 +36,10 @@ std::vector<ProviderConfig> builtin_providers() {
         anth("anthropic", "Claude 官方", "https://api.anthropic.com",
              {"claude-opus-4-8", "claude-sonnet-4-6", "claude-haiku-4-5"},
              "claude-opus-4-8", 256000),
-        []() {
-            ProviderConfig c = anth("deepseek", "DeepSeek", "https://api.deepseek.com/anthropic",
-                                    {"deepseek-v4-flash", "deepseek-v4-pro"},
-                                    "deepseek-v4-flash", 256000);  // 默认 256k,用户可在模型管理勾选 1M
-            c.disable_thinking = true;  // DeepSeek 的 Anthropic 端点默认开 thinking,必须关掉
-            return c;
-        }(),
+        // DeepSeek 走 OpenAI 原生格式(官方主推,最稳定;Anthropic 兼容壳会静默丢弃非法工具参数,命中率 ~50%)
+        oai("deepseek", "DeepSeek", "https://api.deepseek.com/v1",
+            {"deepseek-v4-flash", "deepseek-v4-pro"},
+            "deepseek-v4-flash", 256000),   // 默认 256k,用户可在模型管理勾选 1M
         anth("zhipu", "智谱 GLM", "https://open.bigmodel.cn/api/anthropic",
              {"glm-4.6", "glm-4.5"},
              "glm-4.6", 256000),

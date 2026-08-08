@@ -80,6 +80,14 @@ body {
   touch-action: manipulation;          /* 消除 300ms 点击延迟 */
   overflow: hidden;
   display: flex;
+  user-select: none;                   /* 非对话界面禁长按选文本 */
+  -webkit-user-select: none;           /* Android WebView / iOS 前缀 */
+}
+/* 对话消息区 + 输入框保留可选中(方便复制代码/文本) */
+.stream, .stream .msg, .stream .bubble, .stream .md,
+#input, .reject-reason textarea {
+  user-select: text;
+  -webkit-user-select: text;
 }
 svg { width: 1.2em; height: 1.2em; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: none; }
 code, .mono { font-family: var(--font-mono); font-size: .9em; }
@@ -222,18 +230,57 @@ button:disabled { cursor: not-allowed; }
 .sessions-list .empty { padding: var(--sp-16); text-align: center; color: var(--muted); font-size: var(--fs-14); }
 
 .session-item {
-  display: flex; align-items: center; gap: var(--sp-12);
-  min-height: 56px; padding: var(--sp-8) var(--sp-12);
+  display: flex; align-items: center; gap: var(--sp-4);
+  min-height: 48px; padding: var(--sp-2) var(--sp-8) var(--sp-2) var(--sp-12);
   border-radius: var(--r-btn); text-align: left; width: 100%;
+  cursor: pointer;  /* 行已是 div,补回指针 */
 }
 .session-item:hover { background: var(--surface-2); }
 .session-item.active { background: var(--accent-soft); }
 .session-item.active .session-title { color: var(--text); font-weight: 600; }
 .session-icn { color: var(--muted); }
 .session-item.active .session-icn { color: var(--accent); }
-.session-main { flex: 1; min-width: 0; }
-.session-title { display: block; font-size: var(--fs-14); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.session-meta { display: block; font-size: var(--fs-12); color: var(--faint); margin-top: 2px; }
+.session-main {
+  flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--sp-12);
+  background: none; border: none; padding: 0; text-align: left; color: inherit;
+  font-family: inherit; cursor: pointer;
+}
+.session-main-wrap { flex: 1; min-width: 0; }
+.session-del {
+  flex: none; width: 28px; height: 28px; margin-left: var(--sp-4);
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; color: var(--text);
+  background: none; border: none; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.session-del:hover, .session-del:focus-visible { color: var(--danger); background: var(--danger-soft); }
+.session-del:active { color: var(--danger); background: var(--danger-soft); }
+.session-del svg { width: 14px; height: 14px; }
+/* 删除确认小卡片:锚定在删除按钮右侧,取代居中大弹窗 */
+.del-pop {
+  position: fixed; z-index: 65;
+  min-width: 130px; max-width: 190px;
+  padding: var(--sp-8) var(--sp-12);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-pop);
+  animation: fade .15s ease-out;
+}
+.del-pop-sub {
+  font-size: 11px; color: var(--muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.del-pop-actions { display: flex; gap: var(--sp-12); justify-content: flex-end; margin-top: var(--sp-8); }
+.del-pop-actions button {
+  background: none; border: none; padding: 0;
+  font-size: 11px; color: var(--text); cursor: pointer;
+}
+.del-pop-actions button:hover { text-decoration: underline; }
+.del-pop .dp-ok { color: var(--danger); }
+.del-pop .dp-ok:active { opacity: .7; }
+.list-note { padding: var(--sp-8) var(--sp-12); font-size: var(--fs-12); color: var(--danger); }
+.session-title { display: block; font-size: var(--fs-15); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sessions > .btn-primary {
   width: 70%;
   margin: var(--sp-12) auto calc(var(--sp-16) + env(safe-area-inset-bottom));
@@ -552,6 +599,7 @@ button:disabled { cursor: not-allowed; }
   .sessions.collapsed .session-meta,
   .sessions.collapsed .session-title,
   .sessions.collapsed .brand { display: none; }
+  .sessions.collapsed .session-del { display: none; }
   .sessions.collapsed .session-item { justify-content: center; padding: 0; }
   .sessions.collapsed > .btn-primary span { display: none; }
   .sessions.collapsed > .btn-primary { padding: 0; }

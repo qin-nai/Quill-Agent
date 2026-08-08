@@ -205,4 +205,12 @@ void SessionStore::update_model(const std::string& id, const std::string& model)
     sqlite3_step(up.s);
 }
 
+bool SessionStore::remove(const std::string& id) {
+    std::lock_guard<std::mutex> lk(mtx_);
+    Stmt del(db_, "DELETE FROM sessions WHERE id=?");
+    bind_text(del.s, 1, id);
+    if (sqlite3_step(del.s) != SQLITE_DONE) die(db_, "delete session: ");
+    return sqlite3_changes(db_) > 0;   // 刚 step 完且持锁,可靠
+}
+
 } // namespace hermes

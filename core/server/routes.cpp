@@ -232,6 +232,18 @@ void register_routes(httplib::Server& svr, AppContext& ctx) {
             SessionMeta{s.id, s.title, s.provider, s.model, s.created_at})}}.dump(), "application/json");
     });
 
+    // 删除会话:运行中 409;不存在 404;成功 {"ok":true}
+    svr.Delete(R"(/api/sessions/([^/]+))", [&ctx](const httplib::Request& req, httplib::Response& res) {
+        const std::string sid = req.matches[1];
+        {
+            std::lock_guard<std::mutex> lk(ctx.active_mtx);
+            if (ctx.active.count(sid)) return set_error(res, 409, "session busy");
+            ctx.active.erase(sid);  // 防御性清理(按 busy 语义本应不在 active)
+        }
+        if (!ctx.sessions.remove(sid)) return set_error(res, 404, "session not found");
+        res.set_content(json{{"ok", true}}.dump(), "application/json");
+    });
+
     svr.Get(R"(/api/sessions/([^/]+)/messages)", [&ctx](const httplib::Request& req, httplib::Response& res) {
         auto s = ctx.sessions.get(req.matches[1]);
         if (!s) return set_error(res, 404, "session not found");

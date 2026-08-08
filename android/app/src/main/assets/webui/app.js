@@ -99,17 +99,110 @@
       return;
     }
     sessions.forEach(s => {
-      const it = document.createElement('button');
+      const busy = s.id === activeId && generating;  // 运行中的会话不渲染删除按钮
+      const it = document.createElement('div');
       it.className = 'session-item' + (s.id === activeId ? ' active' : '');
       it.setAttribute('role', 'option');
       it.setAttribute('aria-selected', s.id === activeId);
       it.innerHTML =
-        '<span class="session-icn">' + ic('i-msg') + '</span>' +
-        '<span class="session-main"><span class="session-title">' + esc(s.title) + '</span>' +
-        '<span class="session-meta">' + esc(s.model) + ' · ' + esc(s.created_at) + '</span></span>';
-      it.addEventListener('click', () => selectSession(s.id));
+        '<button type="button" class="session-main">' +
+          '<span class="session-icn">' + ic('i-msg') + '</span>' +
+          '<span class="session-main-wrap">' +
+            '<span class="session-title">' + esc(s.title) + '</span>' +
+          '</span>' +
+        '</button>' +
+        (busy ? '' : '<button type="button" class="session-del" title="删除会话" aria-label="删除会话">' + ic('i-x') + '</button>');
+      it.addEventListener('click', () => selectSession(s.id));  // 行任意处点击选中
+      const del = it.querySelector('.session-del');
+      if (del) del.addEventListener('click', e => { e.stopPropagation(); deleteSession(s.id, s.title, del); });
       box.appendChild(it);
     });
+  }
+
+  let deleteBusy = false;  // 防抖:同一时刻只处理一个删除
+  async function deleteSession(id, title, btn) {
+    if (deleteBusy) return;
+    const decision = await confirmDeletePop(btn, title);  // 小卡片确认:锚定在删除按钮右侧
+    if (decision !== 'allow') return;  // 拒绝 → 什么都不做
+    deleteBusy = true;
+    try {
+      await api.json('/api/sessions/' + encodeURIComponent(id), { method: 'DELETE' });
+      const wasActive = id === activeId;
+      sessions = sessions.filter(x => x.id !== id);
+      renderSessions();
+      if (wasActive) {
+        if (generating) stopGeneration();  // 防御:正常 UI 下运行中会话无删除按钮
+        activeId = null;
+        messages = [];
+        renderMessages();  // messages 空 → 内部走 showEmpty()
+        $('#sessionTitle').textContent = '会话';
+      }
+    } catch (e) {
+      // 404:后端已无此会话(可能被其它端删)→ 视作成功,本地移除
+      if (/404|not found/i.test(e.message)) {
+        sessions = sessions.filter(x => x.id !== id);
+        renderSessions();
+      } else {
+        flashListNote('删除失败: ' + e.message);  // 409 busy / 网络错误
+      }
+    } finally {
+      deleteBusy = false;
+    }
+  }
+
+  // 删除确认小卡片:在被点击的删除按钮右侧弹出(取代居中的大弹窗)
+  // 返回 'allow' / 'deny';点击卡片外或 ESC 视为拒绝
+  function confirmDeletePop(anchor, title) {
+    return new Promise(resolve => {
+      const pop = document.createElement('div');
+      pop.className = 'del-pop';
+      pop.setAttribute('role', 'dialog');
+      pop.setAttribute('aria-label', '删除会话');
+      pop.innerHTML =
+        '<div class="del-pop-sub">' + esc(title) + '</div>' +
+        '<div class="del-pop-actions">' +
+          '<button type="button" class="dp-cancel">取消</button>' +
+          '<button type="button" class="dp-ok">删除</button>' +
+        '</div>';
+      document.body.appendChild(pop);
+      // 定位:始终在会话面板内部,紧贴删除按钮左侧。
+      // 删除按钮在面板右边缘,放右侧会盖住对话区(弹到外面),故贴左。
+      const panel = document.querySelector('.sessions');
+      const pr = panel ? panel.getBoundingClientRect() : null;
+      const r = anchor.getBoundingClientRect();
+      let left = r.right - pop.offsetWidth;   // 右边缘对齐按钮右边缘 → 卡片在按钮左边
+      let top = r.top + r.height / 2 - pop.offsetHeight / 2;
+      if (pr) {
+        left = Math.max(pr.left + 8, Math.min(left, pr.right - pop.offsetWidth - 8));
+        top = Math.max(pr.top + 8, Math.min(top, pr.bottom - pop.offsetHeight - 8));
+      } else {
+        left = Math.max(8, left);
+        top = Math.max(8, Math.min(top, innerHeight - pop.offsetHeight - 8));
+      }
+      pop.style.left = left + 'px';
+      pop.style.top = top + 'px';
+      const cleanup = () => {
+        pop.remove();
+        document.removeEventListener('click', onDoc, true);
+        document.removeEventListener('keydown', onKey, true);
+      };
+      const close = val => { cleanup(); resolve(val); };
+      const onDoc = e => { if (!pop.contains(e.target)) close('deny'); };
+      const onKey = e => { if (e.key === 'Escape') close('deny'); };
+      pop.querySelector('.dp-cancel').onclick = () => close('deny');
+      pop.querySelector('.dp-ok').onclick = () => close('allow');
+      document.addEventListener('click', onDoc, true);
+      document.addEventListener('keydown', onKey, true);
+    });
+  }
+
+  // 会话列表顶部轻提示,2 秒后消失
+  function flashListNote(msg) {
+    const n = document.createElement('p');
+    n.className = 'list-note';
+    n.textContent = msg;
+    $('#sessionList').prepend(n);
+    setTimeout(() => n.remove(), 2000);
   }
 
   async function selectSession(id) {

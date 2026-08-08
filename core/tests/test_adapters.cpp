@@ -1,6 +1,7 @@
 // 适配器单元测试:用假 transport 回放 canned SSE,
 // 验证 claude / openai_compat 两个适配器的请求翻译与流式解析。
 #include <iostream>
+#include <optional>
 #include <string>
 #include <vector>
 #include "hermes/llm/claude_adapter.hpp"
@@ -168,6 +169,75 @@ static void test_openai_translation() {
     CHECK(has_bearer);
 }
 
+// OpenAI 适配器回归:请求体必须带 max_tokens(缺省长回答被截断)+ stream_options(usage 需显式请求)
+static void test_openai_request_fields() {
+    FakeTransport ft;
+    ft.sse_body = "data: [DONE]\n\n";
+
+    OpenAICompatAdapter adapter(ft.make());
+    ProviderConfig cfg;
+    cfg.adapter = AdapterType::OpenAICompat;
+    cfg.base_url = "https://example.com/v1";
+    cfg.default_model = "m";
+
+    collect(adapter, cfg, make_req());
+
+    const auto body = nlohmann::json::parse(ft.captured.body);
+    CHECK(body["max_tokens"] == 16000);
+    CHECK(body["stream_options"]["include_usage"] == true);
+}
+
+// OpenAI 适配器:usage 帧(prompt_tokens/completion_tokens)要进 Done 事件的 token
+static void test_openai_usage() {
+    FakeTransport ft;
+    ft.sse_body =
+        "data: {\"choices\":[{\"delta\":{\"content\":\"hi\"}}]}\n\n"
+        "data: {\"choices\":[],\"usage\":{\"prompt_tokens\":120,\"completion_tokens\":30}}\n\n"
+        "data: [DONE]\n\n";
+
+    OpenAICompatAdapter adapter(ft.make());
+    ProviderConfig cfg;
+    cfg.adapter = AdapterType::OpenAICompat;
+    cfg.base_url = "https://example.com/v1";
+    cfg.default_model = "m";
+
+    auto events = collect(adapter, cfg, make_req());
+    CHECK(events.size() == 2);
+    CHECK(events[0].type == LlmEvent::Type::TextDelta);
+    CHECK(events[1].type == LlmEvent::Type::Done);
+    CHECK(events[1].in_tokens == 120);
+    CHECK(events[1].out_tokens == 30);
+}
+
+// OpenAI 适配器:工具参数非法 JSON 不再静默变空对象,保留原文并标记 __parse_error
+static void test_openai_tool_parse_error() {
+    FakeTransport ft;
+    ft.sse_body =
+        "data: {\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":null}}]}\n\n"
+        "data: {\"choices\":[{\"delta\":{\"tool_calls\":[{\"index\":0,\"id\":\"call_1\","
+        "\"type\":\"function\",\"function\":{\"name\":\"run_script\",\"arguments\":\"\"}}]}}]}\n\n"
+        "data: {\"choices\":[{\"delta\":{\"tool_calls\":[{\"index\":0,"
+        "\"function\":{\"arguments\":\"{\\\"code\\\": Tense}\"}}]}}]}\n\n"
+        "data: {\"choices\":[{\"delta\":{},\"finish_reason\":\"tool_calls\"}]}\n\n"
+        "data: [DONE]\n\n";
+
+    OpenAICompatAdapter adapter(ft.make());
+    ProviderConfig cfg;
+    cfg.adapter = AdapterType::OpenAICompat;
+    cfg.base_url = "https://example.com/v1";
+    cfg.default_model = "m";
+
+    auto events = collect(adapter, cfg, make_req());
+    CHECK(events.size() == 2);
+    CHECK(events[0].type == LlmEvent::Type::ToolUseComplete);
+    CHECK(events[0].tool_use.tool_use_id == "call_1");
+    CHECK(events[0].tool_use.tool_name == "run_script");
+    // 解析失败:不再丢成空对象,而是带原文 + 标记
+    CHECK(events[0].tool_use.tool_input.contains("__parse_error"));
+    CHECK(events[0].tool_use.tool_input["__parse_error"] == "{\"code\": Tense}");
+    CHECK(events[1].type == LlmEvent::Type::Done);
+}
+
 static void test_claude_tool() {
     FakeTransport ft;
     ft.sse_body =
@@ -263,14 +333,38 @@ static void test_claude_translation() {
     CHECK(msgs[2]["content"][0]["content"] == "文件内容...");
 }
 
+// DeepSeek 预设必须走 OpenAI 原生格式(官方主推,最稳定;Anthropic 兼容壳会静默丢弃非法工具参数)。
+static void test_deepseek_preset() {
+    std::optional<ProviderConfig> found;
+    for (const auto& p : builtin_providers())
+        if (p.id == "deepseek") { found = p; break; }
+    CHECK(found.has_value());
+    if (!found) return;
+    CHECK(found->adapter == AdapterType::OpenAICompat);
+    CHECK(found->base_url == "https://api.deepseek.com/v1");
+    CHECK(found->default_model == "deepseek-v4-flash");
+    CHECK(found->disable_thinking == false);  // 只对 Claude 适配器有意义,OpenAI 格式下应为默认值
+    bool has_flash = false, has_pro = false;
+    for (const auto& m : found->models) {
+        if (m == "deepseek-v4-flash") has_flash = true;
+        if (m == "deepseek-v4-pro") has_pro = true;
+    }
+    CHECK(has_flash);
+    CHECK(has_pro);
+}
+
 int main() {
     try {
         test_openai_text();
         test_openai_tool();
         test_openai_translation();
+        test_openai_request_fields();
+        test_openai_usage();
+        test_openai_tool_parse_error();
         test_claude_tool();
         test_claude_text();
         test_claude_translation();
+        test_deepseek_preset();
     } catch (const std::exception& e) {
         std::cerr << "EXCEPTION: " << e.what() << "\n";
         ++g_failures;
