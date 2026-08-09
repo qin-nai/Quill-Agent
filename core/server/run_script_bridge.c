@@ -314,8 +314,8 @@ int hermes_script_run(const char* root, const char* script, char** out, int* is_
     JSValue console = JS_NewObject(ctx);
     JS_SetPropertyStr(ctx, console, "log", JS_NewCFunction(ctx, js_console, "log", 1));
     JS_SetPropertyStr(ctx, console, "error", JS_NewCFunction(ctx, js_console, "error", 1));
-    JS_SetPropertyStr(ctx, global, "console", console);
-    JS_FreeValue(ctx, console);
+    JS_SetPropertyStr(ctx, global, "console", console);  // SetPropertyStr 接管 console 所有权
+    /* 不能再 JS_FreeValue(ctx, console):引用已转给 global 属性,再释放会提前销毁 → GC 悬垂指针崩溃 */
     JS_FreeValue(ctx, global);
 
     JSValue ret = JS_Eval(ctx, script, strlen(script), "<script>", JS_EVAL_TYPE_GLOBAL);

@@ -85,7 +85,7 @@ body {
 }
 /* 对话消息区 + 输入框保留可选中(方便复制代码/文本) */
 .stream, .stream .msg, .stream .bubble, .stream .md,
-#input, .reject-reason textarea {
+#input {
   user-select: text;
   -webkit-user-select: text;
 }
@@ -279,6 +279,27 @@ button:disabled { cursor: not-allowed; }
 .del-pop-actions button:hover { text-decoration: underline; }
 .del-pop .dp-ok { color: var(--danger); }
 .del-pop .dp-ok:active { opacity: .7; }
+/* 长按文件弹出的操作菜单 */
+.menu-pop {
+  position: fixed; z-index: 65;
+  min-width: 170px;
+  padding: var(--sp-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-pop);
+  animation: fade .15s ease-out;
+  display: flex; flex-direction: column; gap: var(--sp-2);
+}
+.menu-item {
+  display: flex; align-items: center; gap: var(--sp-8);
+  width: 100%; padding: var(--sp-8) var(--sp-12);
+  border: none; background: none; border-radius: var(--r-btn);
+  font-size: var(--fs-14); color: var(--text); cursor: pointer; text-align: left;
+}
+.menu-item:hover { background: var(--surface-2); }
+.menu-item:active { background: var(--surface-2); }
+.menu-item svg { width: 16px; height: 16px; color: var(--muted); flex: none; }
 .list-note { padding: var(--sp-8) var(--sp-12); font-size: var(--fs-12); color: var(--danger); }
 .session-title { display: block; font-size: var(--fs-15); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sessions > .btn-primary {
@@ -411,6 +432,27 @@ button:disabled { cursor: not-allowed; }
 .tool-status.ok .st-dot { background: var(--success); }
 .tool-status.err { color: var(--danger); }
 .tool-status.err .st-dot { background: var(--danger); }
+
+/* 工具内联确认:✗拒绝 / ✓允许(替代居中弹窗) */
+.tool-confirm {
+  display: flex; align-items: center; gap: var(--sp-8);
+  padding: var(--sp-8) var(--sp-10);
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+.tool-confirm .lbl { font-size: 11px; color: var(--muted); margin-right: auto; }
+.tool-confirm button {
+  display: inline-flex; align-items: center; gap: var(--sp-4);
+  min-height: 34px; padding: 0 var(--sp-12);
+  border-radius: var(--r-btn); font-size: 12px; cursor: pointer;
+  border: 1px solid transparent;
+}
+.tool-confirm button svg { width: 14px; height: 14px; }
+.tool-confirm .confirm-ok { background: var(--success-soft); color: var(--success); font-weight: 600; }
+.tool-confirm .confirm-x { background: var(--surface-2); color: var(--text); }
+.tool-confirm .confirm-ok:active { filter: brightness(.94); }
+.tool-confirm .confirm-x:active { filter: brightness(.94); }
+.tool-card.need-confirm { box-shadow: 0 0 0 1px var(--success); }
 
 /* 回合消耗 token 统计 */
 .usage-note { font-size: 11px; color: var(--faint); text-align: right; padding: 0 var(--sp-4); }
@@ -573,14 +615,6 @@ button:disabled { cursor: not-allowed; }
 .diff .dl { color: var(--danger); background: var(--danger-soft); padding: 1px 12px; }
 .diff .da { color: var(--success); background: var(--success-soft); padding: 1px 12px; }
 .diff .dc { color: var(--faint); padding: 1px 12px; }
-.reject-reason { margin-top: var(--sp-12); }
-.reject-reason summary { font-size: var(--fs-13, .8125rem); color: var(--muted); cursor: pointer; }
-.reject-reason textarea {
-  width: 100%; min-height: 76px; margin-top: var(--sp-8);
-  background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r-in);
-  color: var(--text); font-family: inherit; font-size: var(--fs-14);
-  padding: var(--sp-12); resize: vertical;
-}
 .confirm-actions { display: flex; gap: var(--sp-12); margin-top: var(--sp-20); }
 .confirm-actions .btn-danger { flex: 1; }
 .confirm-actions .btn-primary { flex: 1.4; }

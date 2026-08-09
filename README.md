@@ -86,9 +86,20 @@ docs/                开发日志、引擎接口明细、HTTP API 文档
 
 ## 文档
 
-- [开发日志](docs/DEV_LOG.md) — 架构演进与关键决策
-- [Core 引擎接口明细](docs/ENGINE_API.md) — 消息模型、AgentLoop、工具协议、LLM 层
+- [架构设计文档](docs/Document.md) — 背景、关键技术决策、分层架构、数据流
+- [HTTP/SSE 协议规范](docs/protocol.md) — 状态码语义、SSE 事件时序、断流语义
 - [HTTP API 接口](docs/API.md) — 前端调用的全部路由与 SSE 事件
+- [Core 引擎接口明细](docs/ENGINE_API.md) — 消息模型、AgentLoop、工具协议、LLM 层
+- [常见问题排查](docs/TROUBLESHOOTING.md) — 症状 → 原因 → 解决
+- [Android 打包说明](android/README.md) — 构建环境、JNI 桥、镜像源
+- [开发日志](docs/DEV_LOG.md) — 架构演进与关键决策
+
+### 蓝图（SVG/ 目录，浏览器打开）
+
+- [项目结构骨架](SVG/项目结构骨架.html)
+- [引擎架构图](SVG/引擎架构图.html)
+- [引擎接口蓝图](SVG/引擎接口蓝图.html) — 模块接口 + 调用关系
+- [前端接口蓝图](SVG/前端接口蓝图.html) — WebUI ↔ REST/SSE
 
 ## 许可
 

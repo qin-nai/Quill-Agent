@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light only">
+<title>项目结构骨架</title>
+<style>
+  html, body { background:#ffffff !important; margin:0; color-scheme: light only; }
+  body { padding:24px; font-family:"Consolas","Menlo","PingFang SC",monospace; }
+  .title { font-size:16px; font-weight:bold; color:#000000; margin-bottom:14px; }
+  pre { font-size:13px; line-height:1.6; color:#000000; margin:0; }
+  .root { color:#7a3fae; font-weight:bold; }
+  .folder { color:#1e6fb0; font-weight:bold; }
+  .cpp { color:#c25b1e; }
+  .c { color:#8a4f9e; }
+  .h { color:#2f8f5b; }
+  .java { color:#b02b7c; }
+  .js { color:#b58900; }
+  .comment { color:#999999; }
+</style>
+</head>
+<body>
+<div class="title">Quill Agent 项目结构 (2026-08-09)</div>
+<pre>
+<span class="root">Quill Agent/</span>
+│
+├─ <span class="folder">core/</span>                                 <span class="comment">Core 引擎 — 纯 C++ (C++17), 零平台依赖, 可开源</span>
+│  ├─ <span class="folder">include/hermes/</span>              <span class="comment">引擎公开接口 (命名空间 hermes)</span>
+│  │  ├─ <span class="h">message</span>.hpp                 <span class="comment">消息模型 (Claude content block 结构)</span>
+│  │  ├─ <span class="h">agent_loop</span>.hpp             <span class="comment">Agent Loop (回合驱动 + 事件流)</span>
+│  │  ├─ <span class="h">http_transport</span>.hpp         <span class="comment">网络注入抽象 (WinHTTP/JNI 共用声明头)</span>
+│  │  ├─ <span class="h">provider</span>.hpp               <span class="comment">Provider 配置 + 12 家内置</span>
+│  │  ├─ <span class="h">skills</span>.hpp                 <span class="comment">Skills 扫描/解析 (SKILL.md frontmatter)</span>
+│  │  ├─ <span class="h">system_prompt</span>.hpp          <span class="comment">Agent.md 记忆 + 技能清单</span>
+│  │  ├─ <span class="h">task_runner</span>.hpp            <span class="comment">子代理 (thread_local, 嵌套 ≤3)</span>
+│  │  ├─ <span class="h">tool</span>.hpp / <span class="h">tool_registry</span>.hpp  <span class="comment">工具协议 + 注册表</span>
+│  │  ├─ <span class="folder">llm/</span>                     <span class="comment">适配器: Claude / OpenAI 兼容 / Stub</span>
+│  │  └─ <span class="folder">tools/</span>                   <span class="comment">内置工具: read/write/edit/glob/grep/todo/task/run_script/web_fetch/web_search/read_skill</span>
+│  ├─ <span class="folder">src/</span>                        <span class="comment">引擎实现 (agent_loop.cpp, llm/*.cpp, provider.cpp)</span>
+│  ├─ <span class="folder">server/</span>                     <span class="comment">本地 HTTP server (cpp-httplib)</span>
+│  │  ├─ <span class="h">routes</span>.cpp                 <span class="comment">全部路由 (REST + SSE)</span>
+│  │  ├─ <span class="h">session_store</span> / <span class="h">keystore</span> / <span class="h">model_store</span>  <span class="comment">SQLite 持久化</span>
+│  │  ├─ <span class="h">run_context</span>.cpp            <span class="comment">回合共享状态 + SSE provider (15s 心跳)</span>
+│  │  ├─ <span class="h">tool_factory</span>.cpp           <span class="comment">工具装配 (内置 + 读 mcp_servers.json 注册 MCP)</span>
+│  │  ├─ <span class="h">mcp_client</span>.cpp            <span class="comment">MCP streamable HTTP 客户端 (JSON-RPC 2.0)</span>
+│  │  ├─ <span class="h">http_transport_winhttp</span>.cpp <span class="comment">Windows 网络层 (WinHTTP)</span>
+│  │  ├─ <span class="c">run_script_bridge</span>.c       <span class="comment">QuickJS 沙盒 C 桥 (C99, MSVC 降级 stub)</span>
+│  │  └─ <span class="h">platform_thread_windows</span>.cpp <span class="comment">线程 enter/exit hook</span>
+│  ├─ <span class="folder">cli/</span>                        <span class="comment">CLI 入口 (main.cpp)</span>
+│  ├─ <span class="folder">third_party/</span>                <span class="comment">httplib / nlohmann_json / sqlite3 / quickjs (vendored)</span>
+│  ├─ <span class="folder">tests/</span>                     <span class="comment">单元测试 (ctest)</span>
+│  └─ <span class="folder">workspace/</span>                  <span class="comment">默认工作区 (Agent.md 项目记忆 + 示例)</span>
+│
+├─ <span class="folder">webui/</span>                             <span class="comment">原生 WebUI (vanilla JS, 零框架零依赖)</span>
+│  ├─ <span class="js">index.html</span> / <span class="js">app.js</span> / <span class="js">style.css</span>
+│  └─ <span class="js">DESIGN.md</span>                     <span class="comment">设计系统 (Quiet Pro) + UX 原则</span>
+│
+├─ <span class="folder">android/</span>                          <span class="comment">Android 打包 (WebView 壳 + JNI 桥)</span>
+│  ├─ <span class="js">README.md</span>                      <span class="comment">构建环境 + JNI 桥说明</span>
+│  ├─ <span class="cpp">server_android</span>.cpp            <span class="comment">JNI 入口启动本地 server</span>
+│  ├─ <span class="cpp">http_transport_android</span>.cpp  <span class="comment">JNI 桥 Java HttpURLConnection (系统 TLS)</span>
+│  ├─ <span class="cpp">platform_thread_android</span>.cpp <span class="comment">线程 attach/detach hook</span>
+│  ├─ <span class="cpp">crash_handler</span>.cpp / .hpp     <span class="comment">native 崩溃处理</span>
+│  ├─ <span class="h">CMakeLists</span>.txt / <span class="java">build.gradle</span>  <span class="comment">Gradle + NDK 30 工程</span>
+│  └─ <span class="folder">app/src/main/</span>               <span class="comment">AndroidManifest + MainActivity + assets/webui + Java 桥</span>
+│     ├─ <span class="java">MainActivity</span>.java          <span class="comment">解压 webui → 后台起 server → WebView 加载</span>
+│     ├─ <span class="java">HermesHttp</span>.java            <span class="comment">HttpURLConnection JNI 桥</span>
+│     ├─ <span class="java">FileBridge</span>.java            <span class="comment">长按文件 → 用其他应用打开 (JS 桥)</span>
+│     ├─ <span class="java">WorkspaceFileProvider</span>.java <span class="comment">content:// 暴露工作区文件 (自实现, 严格限定工作区内)</span>
+│     └─ <span class="folder">assets/webui/</span>             <span class="comment">内置 WebUI 副本</span>
+│
+├─ <span class="folder">docs/</span>                             <span class="comment">设计文档</span>
+│  ├─ <span class="js">Document.md</span>                    <span class="comment">架构设计文档</span>
+│  ├─ <span class="js">protocol.md</span>                    <span class="comment">HTTP/SSE 协议规范 (状态码 + 事件时序)</span>
+│  ├─ <span class="js">API.md</span>                        <span class="comment">HTTP API 手册 (REST + SSE 端点清单)</span>
+│  ├─ <span class="js">ENGINE_API.md</span>                 <span class="comment">Core 引擎接口明细</span>
+│  ├─ <span class="js">TROUBLESHOOTING.md</span>            <span class="comment">常见问题排查 (症状→原因→解决)</span>
+│  └─ <span class="js">DEV_LOG.md</span>                    <span class="comment">开发日志 (阶段演进)</span>
+│
+└─ <span class="folder">SVG/</span>                             <span class="comment">蓝图 / 架构图</span>
+   ├─ 项目结构骨架.html                           <span class="comment">项目结构骨架 (当前文件)</span>
+   ├─ 引擎架构图.html                             <span class="comment">分层架构 + 调用方向</span>
+   ├─ 引擎接口蓝图.html                           <span class="comment">模块接口 + 调用关系</span>
+   └─ 前端接口蓝图.html                           <span class="comment">WebUI ↔ REST/SSE</span>
+</pre>
+</body>
+</html>

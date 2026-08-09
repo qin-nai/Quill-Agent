@@ -4,6 +4,7 @@
 #include <httplib.h>
 #include "app_context.hpp"
 #include "routes.hpp"
+#include "crash_handler.hpp"
 
 extern "C" void hermes_android_init(JNIEnv*);   // 缓存 HermesHttp 类引用+方法(主线程)
 
@@ -30,6 +31,8 @@ Java_com_hermes_agent_MainActivity_startServer(JNIEnv* env, jclass,
     env->ReleaseStringUTFChars(data, dt);
 
     try {
+        // 崩溃捕获:写 backtrace 到 workspace/crash.log,复现后可在 App 文件树里读出来定位
+        hermes::install_crash_handler(workspace_s + "/crash.log");
         hermes::AppContext ctx(webui_s, workspace_s, data_s);
         httplib::Server svr;
         // SSE 连接整个回合占一个池线程;池必须够大,否则 confirm/stop 请求会因无线程而死锁。

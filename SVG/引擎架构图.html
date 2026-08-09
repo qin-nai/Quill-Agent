@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light only">
+<title>Quill Agent 引擎架构图</title>
+<style>
+  html, body { background:#ffffff !important; margin:0; padding:16px; color-scheme: light only; }
+  svg { width:100%; height:auto; display:block; }
+  text { fill:#000000 !important; font-family:"PingFang SC","Microsoft YaHei",sans-serif; }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 1000 720" xmlns="http://www.w3.org/2000/svg">
+
+  <defs>
+    <marker id="callArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#c0392b"/>
+    </marker>
+    <marker id="injArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2f5f6b"/>
+    </marker>
+  </defs>
+
+  <!-- Row1: WebUI -->
+  <rect x="20" y="20" width="960" height="70" rx="10" fill="#c3d1a8" stroke="#8fa06e" stroke-width="2"/>
+  <text x="500" y="52" font-size="20" text-anchor="middle" font-weight="bold">WebUI（原生 vanilla JS，零依赖）</text>
+  <text x="500" y="76" font-size="13" text-anchor="middle" fill="#5a6a3a">对话流 · 文件树 · 工具卡片 · 确认弹窗 · 设置抽屉</text>
+
+  <!-- Row2: HTTP server -->
+  <rect x="20" y="120" width="620" height="80" rx="10" fill="#94b877" stroke="#6f8c52" stroke-width="2"/>
+  <text x="330" y="152" font-size="18" text-anchor="middle" fill="#ffffff" font-weight="bold">本地 HTTP server（cpp-httplib · localhost:8090）</text>
+  <text x="330" y="176" font-size="13" text-anchor="middle" fill="#eef5e6">REST + SSE 事件流 · RunContext 回合状态 · SQLite 持久化</text>
+
+  <!-- Row2b: 右侧平台壳（Windows/Android 并置） -->
+  <rect x="660" y="120" width="320" height="80" rx="10" fill="#dfeee9" stroke="#a9cfc4" stroke-width="2"/>
+  <text x="820" y="148" font-size="15" text-anchor="middle" font-weight="bold">平台壳</text>
+  <text x="820" y="170" font-size="12" text-anchor="middle" fill="#44665c">Windows hermes_server.exe</text>
+  <text x="820" y="188" font-size="12" text-anchor="middle" fill="#44665c">Android WebView + JNI</text>
+
+  <!-- 调用箭头: WebUI -> HTTP -->
+  <line x1="330" y1="110" x2="330" y2="92" stroke="#c0392b" stroke-width="2" marker-end="url(#callArrow)"/>
+  <text x="1000" y="108" font-size="12" fill="#c0392b" text-anchor="end">红色箭头 = 调用方向（REST/SSE）</text>
+
+  <!-- Row3: Core Engine -->
+  <rect x="20" y="240" width="960" height="250" rx="10" fill="#eef3e8" stroke="#a9b88e" stroke-width="2"/>
+  <text x="500" y="268" font-size="16" text-anchor="middle" font-weight="bold">Core Engine（纯 C++ · C++17 · 零平台依赖）</text>
+
+  <!-- AgentLoop 门面条 -->
+  <rect x="40" y="282" width="480" height="44" rx="8" fill="#e8b23d" stroke="#b8862a" stroke-width="2"/>
+  <text x="280" y="309" font-size="16" text-anchor="middle" font-weight="bold">AgentLoop ← 回合唯一入口</text>
+
+  <!-- LLM 层 -->
+  <rect x="540" y="282" width="420" height="92" rx="8" fill="#b9d3ea" stroke="#7fa8c9" stroke-width="2"/>
+  <text x="750" y="306" font-size="15" text-anchor="middle" font-weight="bold">LLM 层（IProviderAdapter）</text>
+  <text x="750" y="330" font-size="13" text-anchor="middle" fill="#345a78">ClaudeAdapter（/v1/messages）</text>
+  <text x="750" y="350" font-size="13" text-anchor="middle" fill="#345a78">OpenAICompatAdapter（/chat/completions）</text>
+  <text x="750" y="370" font-size="12" text-anchor="middle" fill="#7a9cbb">StubAdapter（测试）</text>
+
+  <!-- 工具系统 -->
+  <rect x="40" y="346" width="480" height="120" rx="8" fill="#bcdedb" stroke="#5aa79f" stroke-width="2"/>
+  <text x="280" y="370" font-size="15" text-anchor="middle" font-weight="bold">ToolRegistry + 内置工具</text>
+  <text x="280" y="393" font-size="12" text-anchor="middle" fill="#2a6b65">read_file / write_file▲ / edit_file▲ / glob / grep</text>
+  <text x="280" y="412" font-size="12" text-anchor="middle" fill="#2a6b65">todo / task(子代理) / run_script(QuickJS沙盒)</text>
+  <text x="280" y="431" font-size="12" text-anchor="middle" fill="#2a6b65">read_skill / web_fetch / web_search / mcp_*</text>
+  <text x="280" y="453" font-size="12" text-anchor="middle" fill="#8a4a3a">▲ = requires_confirmation → 确认门禁</text>
+
+  <!-- 确认门禁 -->
+  <rect x="540" y="394" width="200" height="72" rx="8" fill="#f2d0c9" stroke="#d08a77" stroke-width="2"/>
+  <text x="640" y="418" font-size="14" text-anchor="middle" font-weight="bold">确认门禁</text>
+  <text x="640" y="440" font-size="12" text-anchor="middle" fill="#8a4a3a">confirm_cb 回调</text>
+  <text x="640" y="457" font-size="12" text-anchor="middle" fill="#8a4a3a">写/改文件先问人</text>
+
+  <!-- Skills / 记忆 -->
+  <rect x="760" y="394" width="200" height="72" rx="8" fill="#e3d5b8" stroke="#b8986a" stroke-width="2"/>
+  <text x="860" y="418" font-size="14" text-anchor="middle" font-weight="bold">Skills / 记忆</text>
+  <text x="860" y="440" font-size="12" text-anchor="middle" fill="#6a5a2a">Skills 扫描 · Agent.md</text>
+  <text x="860" y="457" font-size="12" text-anchor="middle" fill="#6a5a2a">SystemPrompt 组装</text>
+
+  <!-- HTTP -> AgentLoop 箭头 -->
+  <line x1="330" y1="200" x2="280" y2="280" stroke="#c0392b" stroke-width="2" marker-end="url(#callArrow)"/>
+  <text x="270" y="240" font-size="11" fill="#c0392b" text-anchor="middle">POST messages(SSE)</text>
+
+  <!-- AgentLoop -> LLM 箭头 -->
+  <line x1="522" y1="305" x2="538" y2="305" stroke="#c0392b" stroke-width="1.8" marker-end="url(#callArrow)"/>
+  <text x="530" y="297" font-size="10" fill="#c0392b" text-anchor="middle">stream</text>
+
+  <!-- AgentLoop -> Tools 箭头 -->
+  <line x1="280" y1="326" x2="280" y2="344" stroke="#c0392b" stroke-width="1.8" marker-end="url(#callArrow)"/>
+
+  <!-- Tools -> 确认门禁 -->
+  <line x1="522" y1="430" x2="538" y2="430" stroke="#c0392b" stroke-width="1.5" marker-end="url(#callArrow)"/>
+  <text x="530" y="422" font-size="10" fill="#c0392b" text-anchor="middle">confirm</text>
+
+  <!-- Row4: 传输层注入 -->
+  <rect x="20" y="530" width="960" height="90" rx="10" fill="#dfeee9" stroke="#a9cfc4" stroke-width="2"/>
+  <text x="500" y="558" font-size="15" text-anchor="middle" font-weight="bold">HttpTransport 注入（引擎只认抽象，不认平台）</text>
+  <rect x="60" y="575" width="400" height="30" rx="6" fill="#2f5f6b" />
+  <text x="260" y="595" font-size="14" text-anchor="middle" fill="#ffffff">Windows：WinHTTP（http_transport_winhttp.cpp）</text>
+  <rect x="520" y="575" width="400" height="30" rx="6" fill="#2f5f6b" />
+  <text x="720" y="595" font-size="14" text-anchor="middle" fill="#ffffff">Android：JNI → HttpURLConnection（系统 TLS）</text>
+
+  <!-- 注入箭头: LLM 层 -> HttpTransport -->
+  <line x1="750" y1="376" x2="750" y2="528" stroke="#2f5f6b" stroke-width="2" marker-end="url(#injArrow)"/>
+  <text x="760" y="460" font-size="11" fill="#2f5f6b">LLM 请求经注入层出网</text>
+  <line x1="860" y1="468" x2="680" y2="528" stroke="#2f5f6b" stroke-width="1.5" marker-end="url(#injArrow)"/>
+
+  <!-- Row5: 持久化 -->
+  <rect x="20" y="650" width="960" height="50" rx="8" fill="#f2efe0" stroke="#c8c2a6" stroke-width="1.5"/>
+  <text x="500" y="680" font-size="14" text-anchor="middle" fill="#555544">SQLite 持久化（跨平台）：sessions（消息 JSON） · keys（API Key） · model_store（自定义模型/黑名单/上下文覆盖）</text>
+
+</svg>
+</body>
+</html>

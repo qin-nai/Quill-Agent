@@ -52,6 +52,8 @@ public class MainActivity extends Activity {
         s.setBuiltInZoomControls(false);
         s.setDisplayZoomControls(false);
         webView.setWebViewClient(new WebViewClient());
+        // 文件树长按 → "用其他应用打开"(FileBridge 转 Android Intent)
+        webView.addJavascriptInterface(new FileBridge(this, workspaceDir), "AndroidBridge");
         setContentView(webView);
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {

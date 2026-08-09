@@ -408,6 +408,8 @@
   }
 
   function appendUser(text) {
+    const empty = streamEl.querySelector('.empty');  // 发消息后移除空状态,避免残留在流顶部
+    if (empty) empty.remove();
     const row = document.createElement('div');
     row.className = 'msg user';
     row.innerHTML = '<div class="bubble">' + esc(text) + '</div>';
@@ -444,6 +446,8 @@
           md.className = 'md';
           md.innerHTML = renderMarkdown(raw);
           b.appendChild(md);
+        } else {
+          row.remove();  // 空气泡(SSE 初始空 text_delta 产生)直接移除,不留空白
         }
         scrollBottom();
       },
@@ -467,10 +471,16 @@
       '<div class="tool-body">' +
         '<div class="lbl">参数</div><pre>' + esc(JSON.stringify(t.params || {}, null, 2)) + '</pre>' +
         '<div class="lbl">结果</div><pre class="out">' + esc(t.output || '') + '</pre>' +
+      '</div>' +
+      '<div class="tool-confirm" hidden>' +
+        '<span class="lbl">等待确认</span>' +
+        '<button type="button" class="confirm-x">' + ic('i-x') + '拒绝</button>' +
+        '<button type="button" class="confirm-ok">' + ic('i-check') + '允许</button>' +
       '</div>';
     card.querySelector('.tool-head').addEventListener('click', () => card.classList.toggle('open'));
     ensureToolGroup().appendChild(card);
     scrollBottom();
+    const confirmRow = card.querySelector('.tool-confirm');
     return {
       setStatus(s) {
         const el = card.querySelector('.tool-status');
@@ -478,6 +488,15 @@
         el.innerHTML = '<span class="st-dot"></span>' + ST_LABEL[s];
       },
       setOutput(o) { card.querySelector('.out').textContent = o; },
+      // 内联确认:卡片内显示 ✗拒绝/✓允许,返回 Promise<boolean>
+      confirm() {
+        return new Promise(resolve => {
+          confirmRow.hidden = false;
+          card.classList.add('need-confirm');
+          confirmRow.querySelector('.confirm-x').onclick = () => { confirmRow.hidden = true; card.classList.remove('need-confirm'); resolve(false); };
+          confirmRow.querySelector('.confirm-ok').onclick = () => { confirmRow.hidden = true; card.classList.remove('need-confirm'); resolve(true); };
+        });
+      },
     };
   }
   // 回合结束的 token 消耗统计(≥1k 显示 x.xk,否则显示具体数字),追加在消息流末尾
@@ -528,24 +547,15 @@
       case 'confirm_request': {
         flushAssistant();
         const h = toolHandles[data.id];
-        if (h) h.setStatus('wait');
-        const decision = await askConfirm({
-          title: '执行 ' + data.name,
-          sub: targetOf(data) || data.name,
-          desc: 'Agent 请求执行以下操作,确认后继续:',
-          diff: Object.keys(data.input || {}).map(k => {
-            const v = typeof data.input[k] === 'string' ? data.input[k] : JSON.stringify(data.input[k]);
-            return { t: '+', line: k + ': ' + v };
-          }),
-        });
+        if (!h) break;
+        h.setStatus('wait');
+        // 内联确认:工具卡片内 ✗拒绝/✓允许,替代居中弹窗
+        const allow = await h.confirm();
         await api.json('/api/sessions/' + encodeURIComponent(activeId) + '/confirm', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            allow: decision === 'allow',
-            reason: decision === 'allow' ? '' : (decision.reason || ''),
-          }),
+          body: JSON.stringify({ allow, reason: allow ? '' : '用户拒绝' }),
         }).catch(() => {});
-        if (h) h.setStatus('running');
+        h.setStatus('running');
         break;
       }
       case 'tool_result': {
@@ -630,25 +640,59 @@
     setGenerating(false);
   }
 
-  /* ---------- 确认弹窗 ---------- */
-  const confirmEl = $('#confirm');
-  function askConfirm(info) {
-    return new Promise(res => {
-      $('#confirmTitle').textContent = info.title;
-      $('#confirmSub').textContent = info.sub;
-      $('#confirmDesc').innerHTML = info.desc;
-      $('#confirmDiff').innerHTML = info.diff.map(d =>
-        '<div class="d' + (d.t === '-' ? 'l' : 'a') + '">' + d.t + ' ' + esc(d.line) + '</div>').join('');
-      $('#rejectReason').value = '';
-      confirmEl.hidden = false;
-      const done = val => { confirmEl.hidden = true; res(val); };
-      $('#confirmAllow').onclick = () => done('allow');
-      $('#confirmDeny').onclick = () => done({ deny: true, reason: $('#rejectReason').value.trim() });
-      confirmEl.onclick = e => { if (e.target === confirmEl) done({ deny: true, reason: '' }); };
+  /* ---------- 文件树:长按操作 ---------- */
+  let lastLongPress = 0;  // 长按时间戳:之后 700ms 内抑制 click,避免误开预览
+
+  // 长按文件项 → 弹出操作菜单(如"用其他应用打开")
+  function attachFileLongPress(el, f) {
+    let timer = null;
+    const cancel = () => { if (timer) { clearTimeout(timer); timer = null; } };
+    el.addEventListener('touchstart', () => {
+      cancel(); timer = setTimeout(() => { timer = null; lastLongPress = Date.now(); showFileMenu(el, f); }, 550);
+    }, { passive: true });
+    el.addEventListener('touchmove', cancel, { passive: true });
+    el.addEventListener('touchend', cancel);
+    el.addEventListener('touchcancel', cancel);
+    el.addEventListener('mousedown', () => {
+      cancel(); timer = setTimeout(() => { timer = null; lastLongPress = Date.now(); showFileMenu(el, f); }, 550);
     });
+    el.addEventListener('mouseup', cancel);
+    el.addEventListener('mouseleave', cancel);
   }
 
-  /* ---------- 文件树 ---------- */
+  // 文件操作菜单:目前仅安卓提供"用其他应用打开",桌面端长按不弹
+  function showFileMenu(anchor, f) {
+    const items = [];
+    if (window.AndroidBridge) {
+      items.push({ label: '用其他应用打开', icon: 'i-file-plus', onClick: () => AndroidBridge.openWithApp(f.path) });
+    }
+    if (!items.length) return;
+    const pop = document.createElement('div');
+    pop.className = 'menu-pop';
+    pop.innerHTML = items.map((it, i) =>
+      '<button type="button" class="menu-item" data-i="' + i + '">' + ic(it.icon || 'i-file') + '<span>' + esc(it.label) + '</span></button>').join('');
+    document.body.appendChild(pop);
+    const r = anchor.getBoundingClientRect();
+    let left = r.right + 10;
+    if (left + pop.offsetWidth > innerWidth - 8) left = Math.max(8, r.left - pop.offsetWidth - 10);
+    let top = r.top;
+    top = Math.max(8, Math.min(top, innerHeight - pop.offsetHeight - 8));
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+    const close = () => { pop.remove(); document.removeEventListener('click', onDoc, true); document.removeEventListener('keydown', onKey, true); };
+    const onDoc = e => { if (!pop.contains(e.target)) close(); };
+    const onKey = e => { if (e.key === 'Escape') close(); };
+    pop.querySelectorAll('.menu-item').forEach(b => {
+      b.addEventListener('click', () => {
+        const item = items[+b.dataset.i];
+        close();
+        if (item && item.onClick) item.onClick();
+      });
+    });
+    document.addEventListener('click', onDoc, true);
+    document.addEventListener('keydown', onKey, true);
+  }
+
   async function openFiletree() {
     // 先打开抽屉再取数据:避免 fetch 挂起时侧边栏不显示
     openDrawer('#filetree');
@@ -681,7 +725,12 @@
         it.innerHTML =
           '<button class="tree-item" role="treeitem">' + ic('i-file') +
           '<span class="name">' + esc(n.name) + '</span></button>';
-        it.querySelector('.tree-item').addEventListener('click', () => openFilePreview(n));
+        const btn = it.querySelector('.tree-item');
+        btn.addEventListener('click', () => {
+          if (Date.now() - lastLongPress < 700) return;  // 长按后抑制 click,防误开预览
+          openFilePreview(n);
+        });
+        attachFileLongPress(btn, n);  // 长按 → 打开方式菜单
       }
       parent.appendChild(it);
     });

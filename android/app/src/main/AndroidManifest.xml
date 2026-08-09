@@ -13,5 +13,11 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!-- 工作区文件以 content:// 暴露给外部 App("用其他应用打开") -->
+        <provider
+            android:name=".WorkspaceFileProvider"
+            android:authorities="com.hermes.agent.files"
+            android:exported="false"
+            android:grantUriPermissions="true"/>
     </application>
 </manifest>

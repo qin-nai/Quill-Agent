@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light only">
+<title>Quill Agent 前端接口蓝图</title>
+<style>
+  html, body { background:#1a1a2e; margin:0; padding:16px; color-scheme:light only; }
+  svg { width:100%; height:auto; display:block; }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 1600 1350" xmlns="http://www.w3.org/2000/svg">
+
+  <defs>
+    <marker id="aGet"  markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L8,4 z" fill="#6faa6f"/></marker>
+    <marker id="aPost" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L8,4 z" fill="#e8b23d"/></marker>
+    <marker id="aDel"  markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L8,4 z" fill="#e05555"/></marker>
+    <marker id="aSse"  markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L8,4 z" fill="#cc88cc"/></marker>
+    <marker id="aEvt"  markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L8,4 z" fill="#aaaa55"/></marker>
+    <filter id="sh"><feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.4"/></filter>
+  </defs>
+
+  <!-- ===== 标题 ===== -->
+  <text x="800" y="28" font-size="22" font-weight="bold" fill="#ffffff" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif">Quill Agent 前端接口蓝图</text>
+  <text x="800" y="48" font-size="12" fill="#888888" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif">WebUI (app.js) ↔ 后端 REST + SSE 调用全景　|　GET=绿　POST=橙　DELETE=红　SSE=紫</text>
+
+  <!-- ============================================================ -->
+  <!--  LAYER 0: 前端 UI 视图层                                       -->
+  <!-- ============================================================ -->
+
+  <!-- WebUI 主窗口 -->
+  <rect x="50" y="70" width="300" height="110" rx="10" fill="#2d2d44" stroke="#6f6faa" stroke-width="2" filter="url(#sh)"/>
+  <text x="200" y="96" font-size="16" font-weight="bold" fill="#bbbbff" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif">Quill WebUI</text>
+  <text x="200" y="115" font-size="11" fill="#888899" text-anchor="middle" font-family="Consolas,monospace">index.html · app.js · style.css</text>
+  <text x="200" y="135" font-size="10" fill="#666677" text-anchor="middle" font-family="Consolas,monospace">原生 vanilla JS · 零框架零依赖</text>
+  <text x="200" y="155" font-size="10" fill="#666677" text-anchor="middle" font-family="Consolas,monospace">手机/平板自适应 (Quiet Pro)</text>
+
+  <!-- 视图 -->
+  <rect x="50" y="210" width="135" height="50" rx="6" fill="#2a2a3a" stroke="#6f6faa" stroke-width="1.2" filter="url(#sh)"/>
+  <text x="117" y="230" font-size="11" fill="#aaaacc" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif">会话列表</text>
+  <text x="117" y="248" font-size="9" fill="#777788" text-anchor="middle" font-family="Consolas,monospace">侧栏/抽屉</text>
+
+  <rect x="215" y="210" width="135" height="50" rx="6" fill="#2a2a3a" stroke="#6f6faa" stroke-width="1.2" filter="url(#sh)"/>
+  <text x="282" y="230" font-size="11" fill="#aaaacc" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif">对话流</text>
+  <text x="282" y="248" font-size="9" fill="#777788" text-anchor="middle" font-family="Consolas,monospace">消息 + 工具卡片</text>
+
+  <rect x="50" y="275" width="135" height="50" rx="6" fill="#2a2a3a" stroke="#6f6faa" stroke-width="1.2" filter="url(#sh)"/>
+  <text x="117" y="295" font-size="11" fill="#aaaacc" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif">文件树</text>
+  <text x="117" y="313" font-size="9" fill="#777788" text-anchor="middle" font-family="Consolas,monospace">只读预览</text>
+
+  <rect x="215" y="275" width="135" height="50" rx="6" fill="#2a2a3a" stroke="#6f6faa" stroke-width="1.2" filter="url(#sh)"/>
+  <text x="282" y="295" font-size="11" fill="#aaaacc" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif">设置抽屉</text>
+  <text x="282" y="313" font-size="9" fill="#777788" text-anchor="middle" font-family="Consolas,monospace">provider/模型/key/主题</text>
+
+  <rect x="132" y="340" width="136" height="30" rx="4" fill="#3a2a1a" stroke="#e8b23d" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="200" y="359" font-size="10" fill="#ccaa77" text-anchor="middle" font-family="Consolas,monospace">确认弹窗(写入文件)</text>
+
+  <rect x="50" y="385" width="300" height="28" rx="4" fill="#2a1a1a" stroke="#cc6666" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="200" y="404" font-size="10" fill="#dd9999" text-anchor="middle" font-family="Consolas,monospace">工具调用卡片: 图标 + 工具名 + 状态 (运行/成功/失败)</text>
+
+  <!-- ============================================================ -->
+  <!--  LAYER 1: API 调用层                                          -->
+  <!-- ============================================================ -->
+
+  <rect x="480" y="70" width="340" height="30" rx="5" fill="#1a2a1a" stroke="#447744" stroke-width="1"/>
+  <text x="650" y="90" font-size="12" fill="#88cc88" text-anchor="middle" font-family="Consolas,monospace">相对路径 /api · server 服务 localhost:8090</text>
+
+  <!-- 会话 & 消息 -->
+  <text x="650" y="118" font-size="11" font-weight="bold" fill="#8888aa" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif">— 会话 / 消息 —</text>
+
+  <rect x="480" y="128" width="340" height="42" rx="6" fill="#1a2a1a" stroke="#6faa6f" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="500" y="147" font-size="12" font-weight="bold" fill="#6faa6f" font-family="Consolas,monospace">GET</text>
+  <text x="540" y="147" font-size="12" fill="#aaddaa" font-family="Consolas,monospace">/api/sessions</text>
+  <text x="500" y="163" font-size="9" fill="#558855" font-family="PingFang SC,Microsoft YaHei,sans-serif">→ 会话列表 [ { id, title, provider, model } ]</text>
+
+  <rect x="480" y="185" width="340" height="42" rx="6" fill="#3a2a1a" stroke="#e8b23d" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="500" y="204" font-size="12" font-weight="bold" fill="#e8b23d" font-family="Consolas,monospace">POST</text>
+  <text x="548" y="204" font-size="12" fill="#ddcc88" font-family="Consolas,monospace">/api/sessions</text>
+  <text x="500" y="220" font-size="9" fill="#998844" font-family="PingFang SC,Microsoft YaHei,sans-serif">{ provider, model, title } → 新建会话</text>
+
+  <rect x="480" y="242" width="340" height="42" rx="6" fill="#1a2a1a" stroke="#6faa6f" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="500" y="261" font-size="12" font-weight="bold" fill="#6faa6f" font-family="Consolas,monospace">GET</text>
+  <text x="540" y="261" font-size="12" fill="#aaddaa" font-family="Consolas,monospace">/api/sessions/{id}/messages</text>
+  <text x="500" y="277" font-size="9" fill="#558855" font-family="PingFang SC,Microsoft YaHei,sans-serif">→ 历史消息 (content block 数组)</text>
+
+  <rect x="480" y="299" width="340" height="50" rx="6" fill="#3a2a1a" stroke="#e8b23d" stroke-width="2" filter="url(#sh)"/>
+  <text x="500" y="318" font-size="12" font-weight="bold" fill="#e8b23d" font-family="Consolas,monospace">POST</text>
+  <text x="540" y="318" font-size="12" fill="#ddcc88" font-family="Consolas,monospace">/api/sessions/{id}/messages</text>
+  <text x="500" y="336" font-size="9" fill="#998844" font-family="PingFang SC,Microsoft YaHei,sans-serif">{ text, depth, model } → SSE 流式响应</text>
+  <text x="500" y="348" font-size="8" fill="#aa8866" font-family="PingFang SC,Microsoft YaHei,sans-serif">会话 busy → 409 · 未配置 key → 400</text>
+
+  <rect x="480" y="364" width="340" height="42" rx="6" fill="#3a2a1a" stroke="#e8b23d" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="500" y="383" font-size="12" font-weight="bold" fill="#e8b23d" font-family="Consolas,monospace">POST</text>
+  <text x="548" y="383" font-size="12" fill="#ddcc88" font-family="Consolas,monospace">/api/sessions/{id}/confirm</text>
+  <text x="500" y="399" font-size="9" fill="#998844" font-family="PingFang SC,Microsoft YaHei,sans-serif">{ allow, reason } → 确认/拒绝工具执行</text>
+
+  <rect x="480" y="421" width="340" height="42" rx="6" fill="#3a2a1a" stroke="#e8b23d" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="500" y="440" font-size="12" font-weight="bold" fill="#e8b23d" font-family="Consolas,monospace">POST</text>
+  <text x="548" y="440" font-size="12" fill="#ddcc88" font-family="Consolas,monospace">/api/sessions/{id}/stop</text>
+  <text x="500" y="456" font-size="9" fill="#998844" font-family="PingFang SC,Microsoft YaHei,sans-serif">→ 停止生成, SSE 流随后结束</text>
+
+  <rect x="480" y="478" width="340" height="42" rx="6" fill="#3a1a1a" stroke="#e05555" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="500" y="497" font-size="12" font-weight="bold" fill="#e05555" font-family="Consolas,monospace">DELETE</text>
+  <text x="560" y="497" font-size="12" fill="#dd8888" font-family="Consolas,monospace">/api/sessions/{id}</text>
+  <text x="500" y="513" font-size="9" fill="#994444" font-family="PingFang SC,Microsoft YaHei,sans-serif">→ 删除会话 · 运行中 → 409 (前端隐藏入口)</text>
+
+  <!-- Provider & 模型 -->
+  <text x="650" y="550" font-size="11" font-weight="bold" fill="#8888aa" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif">— Provider / 模型 / Key —</text>
+
+  <rect x="480" y="560" width="340" height="42" rx="6" fill="#1a2a1a" stroke="#6faa6f" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="500" y="579" font-size="12" font-weight="bold" fill="#6faa6f" font-family="Consolas,monospace">GET</text>
+  <text x="540" y="579" font-size="12" fill="#aaddaa" font-family="Consolas,monospace">/api/providers</text>
+  <text x="500" y="595" font-size="9" fill="#558855" font-family="PingFang SC,Microsoft YaHei,sans-serif">→ 全部 provider + 模型 (剔除黑名单)</text>
+
+  <rect x="480" y="617" width="340" height="42" rx="6" fill="#3a2a1a" stroke="#e8b23d" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="500" y="636" font-size="12" font-weight="bold" fill="#e8b23d" font-family="Consolas,monospace">POST</text>
+  <text x="545" y="636" font-size="12" fill="#ddcc88" font-family="Consolas,monospace">/api/providers/{id}/models</text>
+  <text x="500" y="652" font-size="9" fill="#998844" font-family="PingFang SC,Microsoft YaHei,sans-serif">{ model } → 添加自定义模型</text>
+
+  <rect x="480" y="674" width="340" height="42" rx="6" fill="#3a2a1a" stroke="#e8b23d" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="500" y="693" font-size="12" font-weight="bold" fill="#e8b23d" font-family="Consolas,monospace">POST</text>
+  <text x="545" y="693" font-size="12" fill="#ddcc88" font-family="Consolas,monospace">/api/providers/{id}/models/remove</text>
+  <text x="500" y="709" font-size="9" fill="#998844" font-family="PingFang SC,Microsoft YaHei,sans-serif">{ model } → 内置黑名单 / 自定义真删</text>
+
+  <rect x="480" y="731" width="340" height="42" rx="6" fill="#3a2a1a" stroke="#e8b23d" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="500" y="750" font-size="12" font-weight="bold" fill="#e8b23d" font-family="Consolas,monospace">POST</text>
+  <text x="545" y="750" font-size="12" fill="#ddcc88" font-family="Consolas,monospace">/api/providers/{id}/models/ctx</text>
+  <text x="500" y="766" font-size="9" fill="#998844" font-family="PingFang SC,Microsoft YaHei,sans-serif">{ model, context_window } → 1M 覆盖 / 0 清除</text>
+
+  <rect x="480" y="788" width="340" height="42" rx="6" fill="#3a2a1a" stroke="#e8b23d" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="500" y="807" font-size="12" font-weight="bold" fill="#e8b23d" font-family="Consolas,monospace">POST</text>
+  <text x="545" y="807" font-size="12" fill="#ddcc88" font-family="Consolas,monospace">/api/providers/{id}/key</text>
+  <text x="500" y="823" font-size="9" fill="#998844" font-family="PingFang SC,Microsoft YaHei,sans-serif">{ key } → 保存 API Key (空=删除)</text>
+
+  <rect x="480" y="845" width="340" height="42" rx="6" fill="#1a2a1a" stroke="#6faa6f" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="500" y="864" font-size="12" font-weight="bold" fill="#6faa6f" font-family="Consolas,monospace">GET</text>
+  <text x="540" y="864" font-size="12" fill="#aaddaa" font-family="Consolas,monospace">/api/providers/{id}/key</text>
+  <text x="500" y="880" font-size="9" fill="#558855" font-family="PingFang SC,Microsoft YaHei,sans-serif">→ 回读已存 key</text>
+
+  <rect x="480" y="902" width="340" height="42" rx="6" fill="#3a2a1a" stroke="#e8b23d" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="500" y="921" font-size="12" font-weight="bold" fill="#e8b23d" font-family="Consolas,monospace">POST</text>
+  <text x="545" y="921" font-size="12" fill="#ddcc88" font-family="Consolas,monospace">/api/providers/{id}/test</text>
+  <text x="500" y="937" font-size="9" fill="#998844" font-family="PingFang SC,Microsoft YaHei,sans-serif">{ key? } → { ok, latency_ms } / 401 key invalid</text>
+
+  <!-- 文件 -->
+  <text x="650" y="975" font-size="11" font-weight="bold" fill="#8888aa" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif">— 工作区文件 —</text>
+
+  <rect x="480" y="985" width="340" height="42" rx="6" fill="#1a2a1a" stroke="#6faa6f" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="500" y="1004" font-size="12" font-weight="bold" fill="#6faa6f" font-family="Consolas,monospace">GET</text>
+  <text x="540" y="1004" font-size="12" fill="#aaddaa" font-family="Consolas,monospace">/api/files/tree</text>
+  <text x="500" y="1020" font-size="9" fill="#558855" font-family="PingFang SC,Microsoft YaHei,sans-serif">→ 文件树 (排除 data/.git/build/node_modules, 深度≤8)</text>
+
+  <rect x="480" y="1042" width="340" height="42" rx="6" fill="#1a2a1a" stroke="#6faa6f" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="500" y="1061" font-size="12" font-weight="bold" fill="#6faa6f" font-family="Consolas,monospace">GET</text>
+  <text x="540" y="1061" font-size="12" fill="#aaddaa" font-family="Consolas,monospace">/api/files/content?path=</text>
+  <text x="500" y="1077" font-size="9" fill="#558855" font-family="PingFang SC,Microsoft YaHei,sans-serif">→ 读文件 · 越界400 · 超1MB 413 · data/ 下 403</text>
+
+  <!-- ============================================================ -->
+  <!--  LAYER 2: SSE 事件流                                           -->
+  <!-- ============================================================ -->
+
+  <rect x="900" y="70" width="340" height="30" rx="5" fill="#2a102a" stroke="#884488" stroke-width="1"/>
+  <text x="1070" y="90" font-size="12" fill="#cc88cc" text-anchor="middle" font-family="Consolas,monospace">SSE 事件流 (POST /messages 响应)</text>
+
+  <rect x="900" y="110" width="340" height="30" rx="5" fill="#2a2a3a" stroke="#aa88aa" stroke-width="1"/>
+  <text x="930" y="130" font-size="11" font-weight="bold" fill="#cc88cc" font-family="Consolas,monospace">text_delta</text>
+  <text x="1220" y="130" font-size="9" fill="#888888" text-anchor="end" font-family="Consolas,monospace">{ text } 流式文本</text>
+
+  <rect x="900" y="150" width="340" height="30" rx="5" fill="#2a2a3a" stroke="#aa88aa" stroke-width="1"/>
+  <text x="930" y="170" font-size="11" font-weight="bold" fill="#cc88cc" font-family="Consolas,monospace">tool_use</text>
+  <text x="1220" y="170" font-size="9" fill="#888888" text-anchor="end" font-family="Consolas,monospace">{ id, name, input } 请求工具</text>
+
+  <rect x="900" y="190" width="340" height="30" rx="5" fill="#3a2a1a" stroke="#e8b23d" stroke-width="1.2"/>
+  <text x="930" y="210" font-size="11" font-weight="bold" fill="#e8b23d" font-family="Consolas,monospace">confirm_request</text>
+  <text x="1220" y="210" font-size="9" fill="#888888" text-anchor="end" font-family="Consolas,monospace">{ id, name, input } 需人工确认</text>
+
+  <rect x="900" y="230" width="340" height="30" rx="5" fill="#2a2a3a" stroke="#aa88aa" stroke-width="1"/>
+  <text x="930" y="250" font-size="11" font-weight="bold" fill="#cc88cc" font-family="Consolas,monospace">tool_result</text>
+  <text x="1220" y="250" font-size="9" fill="#888888" text-anchor="end" font-family="Consolas,monospace">{ id, name, ok, output }</text>
+
+  <rect x="900" y="270" width="340" height="30" rx="5" fill="#2a2a3a" stroke="#aa88aa" stroke-width="1"/>
+  <text x="930" y="290" font-size="11" font-weight="bold" fill="#cc88cc" font-family="Consolas,monospace">usage</text>
+  <text x="1220" y="290" font-size="9" fill="#888888" text-anchor="end" font-family="Consolas,monospace">{ in, out, context_used, window }</text>
+
+  <rect x="900" y="310" width="340" height="30" rx="5" fill="#2a2a3a" stroke="#6faa6f" stroke-width="1"/>
+  <text x="930" y="330" font-size="11" font-weight="bold" fill="#6faa6f" font-family="Consolas,monospace">done</text>
+  <text x="1220" y="330" font-size="9" fill="#888888" text-anchor="end" font-family="Consolas,monospace">{} 回合正常结束</text>
+
+  <rect x="900" y="350" width="340" height="30" rx="5" fill="#3a1a1a" stroke="#e05555" stroke-width="1.2"/>
+  <text x="930" y="370" font-size="11" font-weight="bold" fill="#e05555" font-family="Consolas,monospace">error</text>
+  <text x="1220" y="370" font-size="9" fill="#888888" text-anchor="end" font-family="Consolas,monospace">{ message } 出错</text>
+
+  <text x="1070" y="410" font-size="9" fill="#666688" text-anchor="middle" font-family="Consolas,monospace">15s 无事件发 :ping 心跳</text>
+  <text x="1070" y="426" font-size="9" fill="#666688" text-anchor="middle" font-family="Consolas,monospace">SSE 被切断且非主动停止 → 提示"连接中断"</text>
+
+  <!-- ============================================================ -->
+  <!--  LAYER 3: 后端                                                  -->
+  <!-- ============================================================ -->
+
+  <rect x="900" y="470" width="340" height="180" rx="10" fill="#2a2010" stroke="#e8b23d" stroke-width="2" filter="url(#sh)"/>
+  <text x="1070" y="496" font-size="16" font-weight="bold" fill="#e8b23d" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif">routes.cpp · HttpApiRouter</text>
+  <line x1="915" y1="504" x2="1225" y2="504" stroke="#443322" stroke-width="0.5"/>
+  <text x="915" y="526" font-size="10" fill="#ddcc88" font-family="Consolas,monospace">cpp-httplib 本地 server · localhost:8090</text>
+  <text x="915" y="546" font-size="10" fill="#998844" font-family="Consolas,monospace">svr-&gt;Post("/api/sessions/{id}/messages")</text>
+  <text x="915" y="564" font-size="10" fill="#998844" font-family="Consolas,monospace">  → SSE chunked 流式输出回合事件</text>
+  <text x="915" y="584" font-size="10" fill="#998844" font-family="Consolas,monospace">svr-&gt;Post(".../confirm") → RunContext 通道</text>
+  <text x="915" y="602" font-size="10" fill="#998844" font-family="Consolas,monospace">svr-&gt;Post(".../stop") → abort 回合</text>
+  <text x="915" y="622" font-size="10" fill="#ddcc88" font-family="Consolas,monospace">↓ AppContext 装配 → AgentLoop.run (worker 线程)</text>
+  <text x="915" y="642" font-size="9" fill="#998844" font-family="PingFang SC,Microsoft YaHei,sans-serif">会话 busy 检查 · 未配置 key 400 · 32 线程池防死锁</text>
+
+  <!-- API → 后端线 -->
+  <line x1="822" y1="320" x2="898" y2="520" stroke="#e8b23d" stroke-width="2" marker-end="url(#aPost)"/>
+
+  <!-- ============================================================ -->
+  <!--  UI → API 调用线                                               -->
+  <!-- ============================================================ -->
+  <line x1="350" y1="235" x2="478" y2="149" stroke="#6faa6f" stroke-width="1.5" marker-end="url(#aGet)"/>
+  <line x1="350" y1="235" x2="478" y2="206" stroke="#e8b23d" stroke-width="1.5" marker-end="url(#aPost)"/>
+  <line x1="282" y1="300" x2="478" y2="263" stroke="#6faa6f" stroke-width="1.5" marker-end="url(#aGet)"/>
+  <line x1="350" y1="235" x2="478" y2="324" stroke="#e8b23d" stroke-width="2" marker-end="url(#aPost)"/>
+  <line x1="200" y1="355" x2="478" y2="385" stroke="#e8b23d" stroke-width="1.5" marker-end="url(#aPost)"/>
+  <line x1="200" y1="355" x2="478" y2="442" stroke="#e8b23d" stroke-width="1.5" marker-end="url(#aPost)"/>
+  <line x1="350" y1="235" x2="478" y2="499" stroke="#e05555" stroke-width="1.5" marker-end="url(#aDel)"/>
+  <line x1="282" y1="300" x2="478" y2="581" stroke="#6faa6f" stroke-width="1.5" marker-end="url(#aGet)"/>
+  <line x1="282" y1="300" x2="478" y2="638" stroke="#e8b23d" stroke-width="1.5" marker-end="url(#aPost)"/>
+  <line x1="282" y1="300" x2="478" y2="695" stroke="#e8b23d" stroke-width="1.5" marker-end="url(#aPost)"/>
+  <line x1="282" y1="300" x2="478" y2="752" stroke="#e8b23d" stroke-width="1.5" marker-end="url(#aPost)"/>
+  <line x1="282" y1="300" x2="478" y2="809" stroke="#e8b23d" stroke-width="1.5" marker-end="url(#aPost)"/>
+  <line x1="282" y1="300" x2="478" y2="866" stroke="#6faa6f" stroke-width="1.5" marker-end="url(#aGet)"/>
+  <line x1="282" y1="300" x2="478" y2="923" stroke="#e8b23d" stroke-width="1.5" marker-end="url(#aPost)"/>
+  <line x1="117" y1="300" x2="478" y2="1006" stroke="#6faa6f" stroke-width="1.5" marker-end="url(#aGet)"/>
+  <line x1="117" y1="300" x2="478" y2="1063" stroke="#6faa6f" stroke-width="1.5" marker-end="url(#aGet)"/>
+
+  <!-- ============================================================ -->
+  <!--  右侧: 调用逻辑速查                                             -->
+  <!-- ============================================================ -->
+  <rect x="1280" y="70" width="290" height="1050" rx="6" fill="#1a1a2e" stroke="#444466" stroke-width="1"/>
+  <text x="1425" y="95" font-size="14" font-weight="bold" fill="#8888aa" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif">前端 JS 调用逻辑</text>
+
+  <text x="1295" y="125" font-size="11" font-weight="bold" fill="#e8b23d" font-family="PingFang SC,Microsoft YaHei,sans-serif">初始化</text>
+  <text x="1295" y="145" font-size="9" fill="#888888" font-family="Consolas,monospace">DOMContentLoaded → syncSessions</text>
+  <text x="1295" y="163" font-size="9" fill="#888888" font-family="Consolas,monospace">→ syncProviders + renderAll</text>
+
+  <text x="1295" y="203" font-size="11" font-weight="bold" fill="#e8b23d" font-family="PingFang SC,Microsoft YaHei,sans-serif">发送消息</text>
+  <text x="1295" y="223" font-size="9" fill="#888888" font-family="Consolas,monospace">sendMessage() → api.ssePost</text>
+  <text x="1295" y="241" font-size="9" fill="#888888" font-family="Consolas,monospace">→ POST /messages (SSE, chunked)</text>
+  <text x="1295" y="259" font-size="9" fill="#888888" font-family="Consolas,monospace">→ 逐事件渲染 text_delta</text>
+  <text x="1295" y="277" font-size="9" fill="#888888" font-family="Consolas,monospace">→ tool_use 卡片 + 状态</text>
+  <text x="1295" y="295" font-size="9" fill="#888888" font-family="Consolas,monospace">→ usage → 上下文百分比</text>
+  <text x="1295" y="313" font-size="9" fill="#888888" font-family="Consolas,monospace">→ done/error → 收起停止按钮</text>
+
+  <text x="1295" y="353" font-size="11" font-weight="bold" fill="#e05555" font-family="PingFang SC,Microsoft YaHei,sans-serif">停止生成</text>
+  <text x="1295" y="373" font-size="9" fill="#888888" font-family="Consolas,monospace">stopGeneration()</text>
+  <text x="1295" y="391" font-size="9" fill="#888888" font-family="Consolas,monospace">→ POST /api/sessions/{id}/stop</text>
+  <text x="1295" y="409" font-size="9" fill="#888888" font-family="Consolas,monospace">→ 前端等 SSE 流自然关闭</text>
+
+  <text x="1295" y="449" font-size="11" font-weight="bold" fill="#e8b23d" font-family="PingFang SC,Microsoft YaHei,sans-serif">人工确认</text>
+  <text x="1295" y="469" font-size="9" fill="#888888" font-family="Consolas,monospace">confirm_request 到达</text>
+  <text x="1295" y="487" font-size="9" fill="#888888" font-family="Consolas,monospace">→ 弹窗: 人话描述 + diff 预览</text>
+  <text x="1295" y="505" font-size="9" fill="#888888" font-family="Consolas,monospace">→ 允许/拒绝 → POST /confirm</text>
+  <text x="1295" y="523" font-size="9" fill="#888888" font-family="Consolas,monospace">→ 拒绝理由可留白, 给 agent 回头路</text>
+
+  <text x="1295" y="563" font-size="11" font-weight="bold" fill="#6faa6f" font-family="PingFang SC,Microsoft YaHei,sans-serif">会话管理</text>
+  <text x="1295" y="583" font-size="9" fill="#888888" font-family="Consolas,monospace">新建会话: 防抖锁, 连点只建一次</text>
+  <text x="1295" y="601" font-size="9" fill="#888888" font-family="Consolas,monospace">删除: DELETE /sessions/{id}</text>
+  <text x="1295" y="619" font-size="9" fill="#888888" font-family="Consolas,monospace">运行中隐藏删除入口 (409)</text>
+  <text x="1295" y="637" font-size="9" fill="#888888" font-family="Consolas,monospace">打开会话 → GET messages 拉历史</text>
+
+  <text x="1295" y="677" font-size="11" font-weight="bold" fill="#5a8ec0" font-family="PingFang SC,Microsoft YaHei,sans-serif">文件树</text>
+  <text x="1295" y="697" font-size="9" fill="#888888" font-family="Consolas,monospace">打开抽屉再异步取 /files/tree</text>
+  <text x="1295" y="715" font-size="9" fill="#888888" font-family="Consolas,monospace">目录懒加载 · 点击文件只读预览</text>
+  <text x="1295" y="733" font-size="9" fill="#888888" font-family="Consolas,monospace">编辑走对话 (write/edit + 确认)</text>
+
+  <text x="1295" y="773" font-size="11" font-weight="bold" fill="#aaaaaa" font-family="PingFang SC,Microsoft YaHei,sans-serif">设置</text>
+  <text x="1295" y="793" font-size="9" fill="#888888" font-family="Consolas,monospace">provider 下拉 + 模型列表</text>
+  <text x="1295" y="811" font-size="9" fill="#888888" font-family="Consolas,monospace">模型管理: 增删自定义 / 1M 上下文</text>
+  <text x="1295" y="829" font-size="9" fill="#888888" font-family="Consolas,monospace">API key 明文/遮蔽切换 + 测试连接</text>
+  <text x="1295" y="847" font-size="9" fill="#888888" font-family="Consolas,monospace">深/浅色切换</text>
+
+  <text x="1295" y="887" font-size="11" font-weight="bold" fill="#aaaaaa" font-family="PingFang SC,Microsoft YaHei,sans-serif">错误处理</text>
+  <text x="1295" y="907" font-size="9" fill="#888888" font-family="Consolas,monospace">api.json → 失败 reject</text>
+  <text x="1295" y="925" font-size="9" fill="#888888" font-family="Consolas,monospace">ssePost → catch → showToast</text>
+  <text x="1295" y="943" font-size="9" fill="#888888" font-family="Consolas,monospace">SSE 断流非主动 → "连接中断" 提示</text>
+
+  <text x="1295" y="983" font-size="11" font-weight="bold" fill="#aaaaaa" font-family="PingFang SC,Microsoft YaHei,sans-serif">图例</text>
+  <line x1="1295" y1="999" x2="1340" y2="999" stroke="#6faa6f" stroke-width="2" marker-end="url(#aGet)"/>
+  <text x="1350" y="1002" font-size="9" fill="#888888" font-family="Consolas,monospace">GET 查询</text>
+  <line x1="1295" y1="1015" x2="1340" y2="1015" stroke="#e8b23d" stroke-width="2" marker-end="url(#aPost)"/>
+  <text x="1350" y="1018" font-size="9" fill="#888888" font-family="Consolas,monospace">POST / SSE</text>
+  <line x1="1295" y1="1031" x2="1340" y2="1031" stroke="#e05555" stroke-width="2" marker-end="url(#aDel)"/>
+  <text x="1350" y="1034" font-size="9" fill="#888888" font-family="Consolas,monospace">DELETE</text>
+  <line x1="1295" y1="1047" x2="1340" y2="1047" stroke="#cc88cc" stroke-width="2" marker-end="url(#aSse)"/>
+  <text x="1350" y="1050" font-size="9" fill="#888888" font-family="Consolas,monospace">SSE 事件</text>
+  <line x1="1295" y1="1063" x2="1340" y2="1063" stroke="#aaaa55" stroke-width="1.5" marker-end="url(#aEvt)"/>
+  <text x="1350" y="1066" font-size="9" fill="#888888" font-family="Consolas,monospace">数据流向</text>
+
+  <text x="1425" y="1105" font-size="9" fill="#555555" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif">对应 docs/API.md · 2026-08-09</text>
+
+  <!-- ============================================================ -->
+  <!--  底部: 对话回合完整流程                                          -->
+  <!-- ============================================================ -->
+  <rect x="50" y="1120" width="800" height="120" rx="10" fill="#222233" stroke="#444466" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="450" y="1146" font-size="14" font-weight="bold" fill="#8888aa" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif">对话回合完整流程</text>
+  <line x1="65" y1="1156" x2="835" y2="1156" stroke="#333344" stroke-width="0.5"/>
+
+  <text x="80" y="1180" font-size="10" fill="#ccaa77" font-family="Consolas,monospace">1. 发消息</text>
+  <text x="185" y="1180" font-size="10" fill="#ccaa77" font-family="Consolas,monospace">2. POST SSE</text>
+  <text x="315" y="1180" font-size="10" fill="#cc88cc" font-family="Consolas,monospace">3. 流式回复</text>
+  <text x="445" y="1180" font-size="10" fill="#ccaa77" font-family="Consolas,monospace">4. 工具调用</text>
+  <text x="570" y="1180" font-size="10" fill="#e05555" font-family="Consolas,monospace">5. 需确认?</text>
+  <text x="700" y="1180" font-size="10" fill="#ccaa77" font-family="Consolas,monospace">6. done</text>
+
+  <text x="80" y="1208" font-size="10" fill="#88aacc" font-family="Consolas,monospace">7. 回填结果</text>
+  <text x="200" y="1208" font-size="10" fill="#88aacc" font-family="Consolas,monospace">8. 再问</text>
+  <text x="300" y="1208" font-size="10" fill="#cc8866" font-family="Consolas,monospace">9. 停止/出错</text>
+  <text x="430" y="1208" font-size="10" fill="#88aacc" font-family="Consolas,monospace">10. usage 统计</text>
+  <text x="560" y="1208" font-size="10" fill="#cc8866" font-family="Consolas,monospace">11. 关流</text>
+
+  <!-- 流程连线 -->
+  <line x1="170" y1="1173" x2="180" y2="1173" stroke="#e8b23d" stroke-width="1" marker-end="url(#aPost)"/>
+  <line x1="300" y1="1173" x2="310" y2="1173" stroke="#cc88cc" stroke-width="1" marker-end="url(#aSse)"/>
+  <line x1="430" y1="1173" x2="440" y2="1173" stroke="#e8b23d" stroke-width="1" marker-end="url(#aPost)"/>
+  <line x1="555" y1="1173" x2="565" y2="1173" stroke="#e05555" stroke-width="1" marker-end="url(#aDel)"/>
+
+</svg>
+</body>
+</html>

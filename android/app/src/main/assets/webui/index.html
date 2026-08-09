@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Quill Agent</title>
-<link rel="stylesheet" href="style.css?v=20260809d">
+<link rel="stylesheet" href="style.css?v=20260809f">
 </head>
 <body>
 
@@ -179,31 +179,6 @@
   </div>
 </aside>
 
-<!-- 确认弹窗:手机=底部 sheet,平板=居中对话框 -->
-<div class="confirm" id="confirm" hidden>
-  <div class="confirm-card" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
-    <div class="confirm-head">
-      <span class="confirm-icon"><svg><use href="#i-pencil"/></svg></span>
-      <div>
-        <h2 id="confirmTitle">写入文件</h2>
-        <p class="confirm-sub" id="confirmSub">src/main.cpp</p>
-      </div>
-    </div>
-    <div class="confirm-body">
-      <p id="confirmDesc">将覆盖 <code>src/main.cpp</code> 的现有内容</p>
-      <div class="diff" id="confirmDiff"></div>
-      <details class="reject-reason">
-        <summary>拒绝时补充原因(可选)</summary>
-        <textarea id="rejectReason" placeholder="告诉 agent 为什么,比如:先看下 README 再说" aria-label="拒绝原因"></textarea>
-      </details>
-    </div>
-    <div class="confirm-actions">
-      <button class="btn-danger" id="confirmDeny">拒绝</button>
-      <button class="btn-primary" id="confirmAllow">允许</button>
-    </div>
-  </div>
-</div>
-
-<script src="app.js?v=20260809d"></script>
+<script src="app.js?v=20260809f"></script>
 </body>
 </html>

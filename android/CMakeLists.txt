@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CORE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../core)
 
 add_library(hermes_native SHARED
+    ${CMAKE_CURRENT_SOURCE_DIR}/crash_handler.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/http_transport_android.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/server_android.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/platform_thread_android.cpp
