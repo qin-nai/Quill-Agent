@@ -1,0 +1,275 @@
+.\" Man page generated from reStructuredText
+.\" by the Docutils 0.22.4 manpage writer.
+.
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.TH "CMAKE-DIAGNOSTICS" "7" "Jul 31, 2026" "4.4.2" "CMake"
+.SH NAME
+cmake-diagnostics \- CMake Diagnostics Reference
+.SH INTRODUCTION
+.sp
+Added in version 4.4.
+
+.sp
+CMake Diagnostics are the mechanism by which CMake categorizes and presents
+certain advisory information about a project\(aqs configuration and the generation
+of its build system.  These diagnostics can be seen as the build system
+equivalent of compiler warnings.  Diagnostics provide feedback on potential
+issues in several categories:
+.INDENT 0.0
+.IP \(bu 2
+Issues that may impact the success of the build.
+.IP \(bu 2
+Issues that may impact the correctness of the build.
+.IP \(bu 2
+Issues that may impact the correctness of the project packaging.
+.IP \(bu 2
+Issues that may impact the ability of the project
+to be built with newer versions of dependencies.
+.IP \(bu 2
+Issues that may impact the ability of the project
+to be built with newer versions of CMake.
+.UNINDENT
+.SH CONTROLLING DIAGNOSTICS
+.sp
+Each diagnostic category has an associated action to be taken when that
+diagnostic is triggered.  Most categories will warn by default.  The available
+actions are described in the \fBcmake_diagnostic()\fP \%<#\:command:cmake_diagnostic> command documentation.
+.sp
+CMake maintains a diagnostic state stack that is similar to the policy state.
+The initial state of the stack is determined by four factors, which are, in
+order of precedence:
+.INDENT 0.0
+.IP \(bu 2
+The default action associated with the diagnostic.
+.IP \(bu 2
+The action associated with the diagnostic stored in the CMake variable cache,
+which is used to persist the initial state between CMake runs.
+.IP \(bu 2
+The \fBwarnings\fP \%<#\:cmakepresets-configurepresets-warnings> and \fBerrors\fP \%<#\:cmakepresets-configurepresets-errors>
+fields of \fBCMake Presets\fP \%<#\:manual:cmake-presets(7)>\&.
+.IP \(bu 2
+The \fB\-W[no\-][error=]\fP \%<#\:cmdoption-cmake-W> command line arguments.
+.UNINDENT
+.sp
+\fBNote:\fP
+.INDENT 0.0
+.INDENT 3.5
+Because command line arguments operate both recursively and in the order
+specified, some combinations of diagnostic arguments may result in later
+arguments completely overwriting the action of earlier arguments.  For
+example, \fB\-Wno\-child \-Wparent\fP will result in the \fBchild\fP warning being
+enabled, because \fB\-Wparent\fP promotes both \fBparent\fP and \fBchild\fP to at
+least \fBWARN\fP severity.  CMake presets are evaluated in order from most
+ancestral to least ancestral.
+.UNINDENT
+.UNINDENT
+.sp
+During script execution, the \fBcmake_diagnostic()\fP \%<#\:command:cmake_diagnostic> command can be used to
+query or alter the state, or to perform limited stack manipulations.
+.sp
+When a diagnostic is issued at configure time (or during script execution, when
+CMake is running in script mode), the current diagnostic state controls the
+action.  Diagnostics issued at generate time, or outside of the configuration
+and generation phases must make use of recorded state information. While CMake
+strives to preserve this information in a way that matches the recorded state
+to the state as of the CMake command which ultimately causes a diagnostic to be
+issued, CMake may sometimes fall back to the state when processing of a
+subdirectory completed, or even the root state.  This may limit the ability of
+the \fBcmake_diagnostic()\fP \%<#\:command:cmake_diagnostic> command to control such diagnostics, especially
+if called from a function or included file.  This is especially the case for
+diagnostics that are not directly coupled to a CMake command.
+.SH DIAGNOSTIC CATEGORIES
+.sp
+The following categories are defined:
+.SS CMD_AUTHOR
+.sp
+Added in version 4.4.
+
+.INDENT 0.0
+.TP
+.B Command Line
+\fB\-W[no\-][error=]author\fP \%<#\:cmdoption-cmake-W>
+.TP
+.B Presets
+\fBwarnings.author\fP \%<#\:cmakepresets-configurepresets-warnings-author>, \fBerrors.author\fP \%<#\:cmakepresets-configurepresets-errors-author>
+.TP
+.B Default
+Warn
+.UNINDENT
+.sp
+Warn about a build system\(aqs incorrect use of CMake, or of a CMake interface
+provided by a dependency.  This is the category triggered by
+\fBmessage(AUTHOR_WARNING)\fP \%<#\:command:message>\&.  It is also the ancestor of many other
+diagnostic categories.
+.sp
+The most important aspect of this category is that it represents issues with
+a project\(aqs build system which typically require alteration to the same.
+This is to say that users simply trying to build a project obtained elsewhere
+will typically not be interested in these warnings, except to perhaps report
+them to the project\(aqs developer(s).
+.SS CMD_DEPRECATED
+.sp
+Added in version 4.4.
+
+.INDENT 0.0
+.TP
+.B Command Line
+\fB\-W[no\-][error=]deprecated\fP \%<#\:cmdoption-cmake-W>
+.TP
+.B Presets
+\fBwarnings.deprecated\fP \%<#\:cmakepresets-configurepresets-warnings-deprecated>, \fBerrors.deprecated\fP \%<#\:cmakepresets-configurepresets-errors-deprecated>
+.TP
+.B Default
+Warn
+.TP
+.B Parent
+\fBCMD_AUTHOR\fP \%<#\:diagnostic:CMD_AUTHOR>
+.UNINDENT
+.sp
+Warn about use of a deprecated function or package.  This is the category
+triggered by \fBmessage(DEPRECATION)\fP \%<#\:command:message>\&.
+.sp
+\fBNote:\fP
+.INDENT 0.0
+.INDENT 3.5
+If \fBCMP0218\fP \%<#\:policy:CMP0218> is not set to \fBNEW\fP, \fBmessage(DEPRECATION)\fP \%<#\:command:message>
+invocations, along with builtin deprecation messages that existed prior to
+CMake 4.4, will ignore this diagnostic state and will instead use the
+\fBCMAKE_WARN_DEPRECATED\fP \%<#\:variable:CMAKE_WARN_DEPRECATED> and \fBCMAKE_ERROR_DEPRECATED\fP \%<#\:variable:CMAKE_ERROR_DEPRECATED>
+variables to determine the severity of deprecation messages.
+.UNINDENT
+.UNINDENT
+.SS CMD_EXPERIMENTAL
+.sp
+Added in version 4.4.
+
+.INDENT 0.0
+.TP
+.B Command Line
+\fB\-W[no\-][error=]experimental\fP \%<#\:cmdoption-cmake-W>
+.TP
+.B Presets
+\fBwarnings.experimental\fP \%<#\:cmakepresets-configurepresets-warnings-experimental>, \fBerrors.experimental\fP \%<#\:cmakepresets-configurepresets-errors-experimental>
+.TP
+.B Default
+Warn
+.TP
+.B Parent
+\fBCMD_AUTHOR\fP \%<#\:diagnostic:CMD_AUTHOR>
+.UNINDENT
+.sp
+Warn if a build system uses an experimental feature, or if CMake detects
+that the gate variable for an experimental feature is set to an unrecognized
+value.
+.SS CMD_INSTALL_ABSOLUTE_DESTINATION
+.sp
+Added in version 4.4.
+
+.INDENT 0.0
+.TP
+.B Command Line
+\fB\-W[no\-][error=]install\-absolute\-destination\fP \%<#\:cmdoption-cmake-W>
+.TP
+.B Presets
+\fBwarnings.installAbsoluteDestination\fP \%<#\:cmakepresets-configurepresets-warnings-installabsolutedestination>, \fBerrors.installAbsoluteDestination\fP \%<#\:cmakepresets-configurepresets-errors-installabsolutedestination>
+.TP
+.B Default
+Ignore
+.TP
+.B Parent
+\fBCMD_AUTHOR\fP \%<#\:diagnostic:CMD_AUTHOR>
+.UNINDENT
+.sp
+Warn when an \fBinstall()\fP \%<#\:command:install> command specifies an absolute \fBDESTINATION\fP
+path.  Absolute destinations are typically undesirable because they prevent
+the installation prefix from being overridden at install time.
+.SS CMD_POLICY
+.sp
+Added in version 4.4.
+
+.INDENT 0.0
+.TP
+.B Command Line
+\fB\-W[no\-][error=]policy\fP \%<#\:cmdoption-cmake-W>
+.TP
+.B Presets
+\fBwarnings.policy\fP \%<#\:cmakepresets-configurepresets-warnings-policy>, \fBerrors.policy\fP \%<#\:cmakepresets-configurepresets-errors-policy>
+.TP
+.B Default
+Warn
+.TP
+.B Parent
+\fBCMD_AUTHOR\fP \%<#\:diagnostic:CMD_AUTHOR>
+.UNINDENT
+.sp
+Warn if a build system potentially depends on the \fBOLD\fP behavior of a CMake
+Policy.  See the \fBcmake_policy()\fP \%<#\:command:cmake_policy> command for more details.  Setting a
+policy to \fBOLD\fP will also disable warnings for that specific policy.
+.SS CMD_UNINITIALIZED
+.sp
+Added in version 4.4.
+
+.INDENT 0.0
+.TP
+.B Command Line
+\fB\-W[no\-][error=]uninitialized\fP \%<#\:cmdoption-cmake-W>
+.TP
+.B Presets
+\fBwarnings.uninitialized\fP \%<#\:cmakepresets-configurepresets-warnings-uninitialized>, \fBerrors.uninitialized\fP \%<#\:cmakepresets-configurepresets-errors-uninitialized>
+.TP
+.B Default
+Ignore
+.UNINDENT
+.sp
+Warn if an uninitialized variable is dereferenced.
+.SS CMD_UNUSED_CLI
+.sp
+Added in version 4.4.
+
+.INDENT 0.0
+.TP
+.B Command Line
+\fB\-W[no\-][error=]unused\-cli\fP \%<#\:cmdoption-cmake-W>
+.TP
+.B Presets
+\fBwarnings.unusedCli\fP \%<#\:cmakepresets-configurepresets-warnings-unusedcli>, \fBerrors.unusedCli\fP \%<#\:cmakepresets-configurepresets-errors-unusedcli>
+.TP
+.B Default
+Ignore
+.UNINDENT
+.sp
+Warn about variables that are declared on the command line, but not used.
+.sp
+This diagnostic is issued outside of the configuration / generation phases.
+Accordingly, while the action of this warning category can be queried as
+usual, the \fBcmake_diagnostic()\fP \%<#\:command:cmake_diagnostic> command is unable to affect the action
+of this diagnostic.
+.SH Copyright
+2000-2026 Kitware, Inc. and Contributors
+.\" End of generated man page.

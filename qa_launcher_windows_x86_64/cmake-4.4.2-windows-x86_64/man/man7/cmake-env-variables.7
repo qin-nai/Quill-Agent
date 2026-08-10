@@ -1,0 +1,1586 @@
+.\" Man page generated from reStructuredText
+.\" by the Docutils 0.22.4 manpage writer.
+.
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.TH "CMAKE-ENV-VARIABLES" "7" "Jul 31, 2026" "4.4.2" "CMake"
+.SH NAME
+cmake-env-variables \- CMake Environment Variables Reference
+.sp
+This page lists environment variables that have special
+meaning to CMake.
+.sp
+For general information on environment variables, see the
+Environment Variables \%<#\:cmake-language-environment-variables>
+section in the cmake\-language manual.
+.SH ENVIRONMENT VARIABLES THAT CHANGE BEHAVIOR
+.SS CLICOLOR
+.sp
+Added in version 3.21.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Set to \fB0\fP to tell command\-line tools not to print color
+messages even if connected to a terminal.
+This is a common convention \%<https://\:web\:.archive\:.org/\:web/\:20250410160803/\:https://\:bixense\:.com/\:clicolors/> among command\-line tools in general.
+.sp
+See also the \fBNO_COLOR\fP \%<#\:envvar:NO_COLOR> and \fBCLICOLOR_FORCE\fP \%<#\:envvar:CLICOLOR_FORCE> environment
+variables.  If either of them is activated, it takes precedence over
+\fBCLICOLOR\fP\&.
+.sp
+See the \fBCMAKE_COLOR_DIAGNOSTICS\fP \%<#\:variable:CMAKE_COLOR_DIAGNOSTICS> variable to control
+color in a generated build system.
+.SS CLICOLOR_FORCE
+.sp
+Added in version 3.5.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Set to a non\-empty value, other than \fB0\fP, to tell command\-line
+tools to print color messages even if not connected to a terminal.
+This is a common convention \%<https://\:web\:.archive\:.org/\:web/\:20250410160803/\:https://\:bixense\:.com/\:clicolors/> among command\-line tools in general.
+.sp
+See also the \fBNO_COLOR\fP \%<#\:envvar:NO_COLOR> and \fBCLICOLOR\fP \%<#\:envvar:CLICOLOR> environment variables.
+If \fBNO_COLOR\fP \%<#\:envvar:NO_COLOR> is activated, it takes precedence over
+\fBCLICOLOR_FORCE\fP\&.  Otherwise, if \fBCLICOLOR_FORCE\fP is
+activated, it takes precedence over \fBCLICOLOR\fP \%<#\:envvar:CLICOLOR>\&.
+.sp
+See the \fBCMAKE_COLOR_DIAGNOSTICS\fP \%<#\:variable:CMAKE_COLOR_DIAGNOSTICS> variable to control
+color in a generated build system.
+.SS CMAKE_APPBUNDLE_PATH
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The \fBCMAKE_APPBUNDLE_PATH\fP environment variable may be set to a list of
+directories to be searched for macOS application bundles
+by the \fBfind_program()\fP \%<#\:command:find_program> and \fBfind_package()\fP \%<#\:command:find_package> commands.
+.sp
+This variable may hold a single directory or a list of directories separated
+by \fB:\fP on UNIX or \fB;\fP on Windows (the same as the \fBPATH\fP environment
+variable convention on those platforms).
+.sp
+See also the \fBCMAKE_APPBUNDLE_PATH\fP \%<#\:variable:CMAKE_APPBUNDLE_PATH> CMake variable.
+.SS CMAKE_FRAMEWORK_PATH
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The \fBCMAKE_FRAMEWORK_PATH\fP environment variable may be set to a list of
+directories to be searched for macOS frameworks by the \fBfind_library()\fP \%<#\:command:find_library>,
+\fBfind_package()\fP \%<#\:command:find_package>, \fBfind_path()\fP \%<#\:command:find_path> and \fBfind_file()\fP \%<#\:command:find_file> commands.
+.sp
+This variable may hold a single directory or a list of directories separated
+by \fB:\fP on UNIX or \fB;\fP on Windows (the same as the \fBPATH\fP environment
+variable convention on those platforms).
+.sp
+See also the \fBCMAKE_FRAMEWORK_PATH\fP \%<#\:variable:CMAKE_FRAMEWORK_PATH> CMake variable.
+.SS CMAKE_INCLUDE_PATH
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The \fBCMAKE_INCLUDE_PATH\fP environment variable may be set to a list of
+directories to be searched by the \fBfind_file()\fP \%<#\:command:find_file> and \fBfind_path()\fP \%<#\:command:find_path> commands.
+.sp
+This variable may hold a single directory or a list of directories separated
+by \fB:\fP on UNIX or \fB;\fP on Windows (the same as the \fBPATH\fP environment
+variable convention on those platforms).
+.sp
+See also the \fBCMAKE_INCLUDE_PATH\fP \%<#\:variable:CMAKE_INCLUDE_PATH> CMake variable.
+.SS CMAKE_LIBRARY_PATH
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The \fBCMAKE_LIBRARY_PATH\fP environment variable may be set to a list of
+directories to be searched by the \fBfind_library()\fP \%<#\:command:find_library> command.
+.sp
+This variable may hold a single directory or a list of directories separated
+by \fB:\fP on UNIX or \fB;\fP on Windows (the same as the \fBPATH\fP environment
+variable convention on those platforms).
+.sp
+See also the \fBCMAKE_LIBRARY_PATH\fP \%<#\:variable:CMAKE_LIBRARY_PATH> CMake variable.
+.SS CMAKE_MAXIMUM_RECURSION_DEPTH
+.sp
+Added in version 3.27.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Maximum recursion depth for CMake scripts.  This environment variable is
+used if the \fBCMAKE_MAXIMUM_RECURSION_DEPTH\fP \%<#\:variable:CMAKE_MAXIMUM_RECURSION_DEPTH> variable is not set.
+See that variable\(aqs documentation for details.
+.SS CMAKE_POLICY_VERSION_MINIMUM
+.sp
+Added in version 4.0.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The default value for \fBCMAKE_POLICY_VERSION_MINIMUM\fP \%<#\:variable:CMAKE_POLICY_VERSION_MINIMUM> when there
+is no explicit configuration given on the first run while creating a new
+build tree.  On later runs in an existing build tree the value persists in
+the cache as \fBCMAKE_POLICY_VERSION_MINIMUM\fP \%<#\:variable:CMAKE_POLICY_VERSION_MINIMUM>\&.
+.SS CMAKE_PREFIX_PATH
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The \fBCMAKE_PREFIX_PATH\fP environment variable may be set to a list of
+directories specifying installation \fIprefixes\fP to be searched by the
+\fBfind_package()\fP \%<#\:command:find_package>, \fBfind_program()\fP \%<#\:command:find_program>, \fBfind_library()\fP \%<#\:command:find_library>,
+\fBfind_file()\fP \%<#\:command:find_file>, and \fBfind_path()\fP \%<#\:command:find_path> commands.  Each command will
+add appropriate subdirectories (like \fBbin\fP, \fBlib\fP, or \fBinclude\fP)
+as specified in its own documentation.
+.sp
+This variable may hold a single prefix or a list of prefixes separated
+by \fB:\fP on UNIX or \fB;\fP on Windows (the same as the \fBPATH\fP environment
+variable convention on those platforms).
+.sp
+See also the \fBCMAKE_PREFIX_PATH\fP \%<#\:variable:CMAKE_PREFIX_PATH> CMake variable.
+.SS CMAKE_PROGRAM_PATH
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The \fBCMAKE_PROGRAM_PATH\fP environment variable may be set to a list of
+directories to be searched by the \fBfind_program()\fP \%<#\:command:find_program> command.
+.sp
+This variable may hold a single directory or a list of directories separated
+by \fB:\fP on UNIX or \fB;\fP on Windows (the same as the \fBPATH\fP environment
+variable convention on those platforms).
+.sp
+See also the \fBCMAKE_PROGRAM_PATH\fP \%<#\:variable:CMAKE_PROGRAM_PATH> CMake variable.
+.SS CMAKE_TLS_VERIFY
+.sp
+Added in version 3.30.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Specify the default value for the \fBfile(DOWNLOAD)\fP \%<#\:download> and
+\fBfile(UPLOAD)\fP \%<#\:upload> commands\(aq \fBTLS_VERIFY\fP option.
+This environment variable is used if the option is not given
+and the \fBCMAKE_TLS_VERIFY\fP \%<#\:variable:CMAKE_TLS_VERIFY> cmake variable is not set.
+.sp
+This variable is also used by the \fBExternalProject\fP \%<#\:module:ExternalProject> and
+\fBFetchContent\fP \%<#\:module:FetchContent> modules for internal calls to
+\fBfile(DOWNLOAD)\fP \%<#\:download> and \fBgit clone\fP\&.
+.SS CMAKE_TLS_VERSION
+.sp
+Added in version 3.30.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Specify the default value for the \fBfile(DOWNLOAD)\fP \%<#\:download> and
+\fBfile(UPLOAD)\fP \%<#\:upload> commands\(aq \fBTLS_VERSION\fP option.
+This environment variable is used if the option is not given
+and the \fBCMAKE_TLS_VERSION\fP \%<#\:variable:CMAKE_TLS_VERSION> cmake variable is not set.
+See that variable for allowed values.
+.sp
+This variable is also used by the \fBExternalProject\fP \%<#\:module:ExternalProject> and
+\fBFetchContent\fP \%<#\:module:FetchContent> modules for internal calls to
+\fBfile(DOWNLOAD)\fP \%<#\:download> and \fBgit clone\fP\&.
+.SS NO_COLOR
+.sp
+Added in version 4.1.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Set to a non\-empty value, other than \fB0\fP, to tell command\-line
+tools not to print color messages even if connected to a terminal.
+This is a common convention \%<https://\:web\:.archive\:.org/\:web/\:20250410160803/\:https://\:bixense\:.com/\:clicolors/> among command\-line tools in general.
+.sp
+See also the \fBCLICOLOR_FORCE\fP \%<#\:envvar:CLICOLOR_FORCE> and \fBCLICOLOR\fP \%<#\:envvar:CLICOLOR> environment
+variables.  If \fBNO_COLOR\fP is activated, it takes precedence
+over both of them.
+.sp
+See the \fBCMAKE_COLOR_DIAGNOSTICS\fP \%<#\:variable:CMAKE_COLOR_DIAGNOSTICS> variable to control
+color in a generated build system.
+.SS SSL_CERT_DIR
+.sp
+Added in version 3.25.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Specify default directory containing CA certificates.  It overrides
+the default CA directory used.
+.SS SSL_CERT_FILE
+.sp
+Added in version 3.25.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Specify the file name containing CA certificates.  It overrides the
+default, os\-specific CA file used.
+.SH ENVIRONMENT VARIABLES THAT CONTROL THE BUILD
+.SS ADSP_ROOT
+.sp
+Added in version 3.24.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The \fBADSP_ROOT\fP environment variable specifies a default value
+for the \fBCMAKE_ADSP_ROOT\fP \%<#\:variable:CMAKE_ADSP_ROOT> variable when there is no explicit
+configuration given on the first run while creating a new build tree.
+.SS CMAKE_APPLE_SILICON_PROCESSOR
+.sp
+Added in version 3.19.2.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+On Apple Silicon hosts running macOS, set this environment variable to tell
+CMake what architecture to use for \fBCMAKE_HOST_SYSTEM_PROCESSOR\fP \%<#\:variable:CMAKE_HOST_SYSTEM_PROCESSOR>\&.
+The value must be either \fBarm64\fP or \fBx86_64\fP\&.
+.sp
+The \fBCMAKE_APPLE_SILICON_PROCESSOR\fP \%<#\:variable:CMAKE_APPLE_SILICON_PROCESSOR> normal variable, if set,
+overrides this environment variable.
+.SS CMAKE_AUTOGEN_INTERMEDIATE_DIR_STRATEGY
+.sp
+Added in version 4.2.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+\fBCMAKE_AUTOGEN_INTERMEDIATE_DIR_STRATEGY\fP is a string specifying the
+strategy to use for autogen\-related target intermediate directories. It
+initializes the \fBCMAKE_AUTOGEN_INTERMEDIATE_DIR_STRATEGY\fP \%<#\:variable:CMAKE_AUTOGEN_INTERMEDIATE_DIR_STRATEGY> variable.
+.SS CMAKE_BUILD_PARALLEL_LEVEL
+.sp
+Added in version 3.12.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Specifies the maximum number of concurrent processes to use when building
+using the \fBcmake \-\-build\fP command line
+Build Tool Mode \%<#\:build-tool-mode>\&.
+For example, if \fBCMAKE_BUILD_PARALLEL_LEVEL\fP is set to 8, the
+underlying build tool will execute up to 8 jobs concurrently as if
+\fBcmake \-\-build\fP were invoked with the
+\fB\-\-parallel 8\fP \%<#\:cmdoption-cmake-build-j> option.
+.sp
+If this variable is defined empty the native build tool\(aqs default number is
+used.
+.SS CMAKE_BUILD_TYPE
+.sp
+Added in version 3.22.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The \fBCMAKE_BUILD_TYPE\fP environment variable specifies a default value
+for the \fBCMAKE_BUILD_TYPE\fP \%<#\:variable:CMAKE_BUILD_TYPE> variable when there is no explicit
+configuration given on the first run while creating a new build tree.
+.SS CMAKE_COLOR_DIAGNOSTICS
+.sp
+Added in version 3.24.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Specifies a default value for the \fBCMAKE_COLOR_DIAGNOSTICS\fP \%<#\:variable:CMAKE_COLOR_DIAGNOSTICS> variable
+when there is no explicit value given on the first run.
+.SS CMAKE_CONFIG_DIR
+.sp
+Added in version 3.31.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Specify a CMake user\-wide configuration directory for
+\fBcmake\-file\-api(7)\fP \%<#\:manual:cmake-file-api(7)> and \fBcmake\-instrumentation(7)\fP \%<#\:manual:cmake-instrumentation(7)> queries.
+.sp
+If this environment variable is not set, the default user\-wide
+configuration directory is platform\-specific:
+.INDENT 0.0
+.IP \(bu 2
+Windows: \fB%LOCALAPPDATA%\eCMake\fP
+.IP \(bu 2
+macOS: \fB$XDG_CONFIG_HOME/CMake\fP if set, otherwise
+\fB$HOME/Library/Application Support/CMake\fP
+.IP \(bu 2
+Linux/Other: \fB$XDG_CONFIG_HOME/cmake\fP if set, otherwise
+\fB$HOME/.config/cmake\fP
+.UNINDENT
+.SS CMAKE_CONFIG_TYPE
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The default build configuration for Build a Project \%<#\:build-tool-mode> and
+\fBctest\fP build handler when there is no explicit configuration given.
+.SS CMAKE_CONFIGURATION_TYPES
+.sp
+Added in version 3.22.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The \fBCMAKE_CONFIGURATION_TYPES\fP environment variable specifies a
+default value for the \fBCMAKE_CONFIGURATION_TYPES\fP \%<#\:variable:CMAKE_CONFIGURATION_TYPES> variable
+when there is no explicit configuration given on the first run while
+creating a new build tree.
+.SS CMAKE_CROSSCOMPILING_EMULATOR
+.sp
+Added in version 3.28.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The default value for \fBCMAKE_CROSSCOMPILING_EMULATOR\fP \%<#\:variable:CMAKE_CROSSCOMPILING_EMULATOR> when there
+is no explicit configuration given on the first run while creating a new
+build tree.  On later runs in an existing build tree the value persists in
+the cache as \fBCMAKE_CROSSCOMPILING_EMULATOR\fP \%<#\:variable:CMAKE_CROSSCOMPILING_EMULATOR>\&.
+.SS CMAKE_DISABLE_PRECOMPILE_HEADERS
+.sp
+Added in version 4.4.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The default value for the \fBCMAKE_DISABLE_PRECOMPILE_HEADERS\fP \%<#\:variable:CMAKE_DISABLE_PRECOMPILE_HEADERS> variable
+when there is no explicit configuration given on the first run while creating a
+new build tree.  On later runs in an existing build tree the value persists in
+the cache as \fBCMAKE_DISABLE_PRECOMPILE_HEADERS\fP \%<#\:variable:CMAKE_DISABLE_PRECOMPILE_HEADERS>\&.
+.SS CMAKE_EXPORT_BUILD_DATABASE
+.sp
+Added in version 3.31.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The default value for \fBCMAKE_EXPORT_BUILD_DATABASE\fP \%<#\:variable:CMAKE_EXPORT_BUILD_DATABASE> when there is no
+explicit configuration given on the first run while creating a new build tree.
+On later runs in an existing build tree the value persists in the cache as
+\fBCMAKE_EXPORT_BUILD_DATABASE\fP \%<#\:variable:CMAKE_EXPORT_BUILD_DATABASE>\&.
+.sp
+\fBNote:\fP
+.INDENT 0.0
+.INDENT 3.5
+This variable is meaningful only when experimental support for build
+databases has been enabled by the
+\fBCMAKE_EXPERIMENTAL_EXPORT_BUILD_DATABASE\fP gate.
+.UNINDENT
+.UNINDENT
+.SS CMAKE_EXPORT_COMPILE_COMMANDS
+.sp
+Added in version 3.17.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The default value for \fBCMAKE_EXPORT_COMPILE_COMMANDS\fP \%<#\:variable:CMAKE_EXPORT_COMPILE_COMMANDS> when there
+is no explicit configuration given on the first run while creating a new
+build tree.  On later runs in an existing build tree the value persists in
+the cache as \fBCMAKE_EXPORT_COMPILE_COMMANDS\fP \%<#\:variable:CMAKE_EXPORT_COMPILE_COMMANDS>\&.
+.SS CMAKE_FASTBUILD_VERBOSE_GENERATOR
+.sp
+Added in version 4.2.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The \fBCMAKE_FASTBUILD_VERBOSE_GENERATOR\fP environment variable specifies a custom default
+value for the \fBCMAKE_FASTBUILD_VERBOSE_GENERATOR\fP \%<#\:variable:CMAKE_FASTBUILD_VERBOSE_GENERATOR> variable in place of the
+default values specified by CMake itself.
+.SS CMAKE_GENERATOR
+.sp
+Added in version 3.15.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Specifies the CMake default generator to use when no generator is supplied
+with \fB\-G\fP \%<#\:cmdoption-cmake-G>\&. If the provided value doesn\(aqt name a generator
+known by CMake, the internal default is used.  Either way the resulting
+generator selection is stored in the \fBCMAKE_GENERATOR\fP \%<#\:variable:CMAKE_GENERATOR> variable.
+.sp
+Some generators may be additionally configured using the environment
+variables:
+.INDENT 0.0
+.IP \(bu 2
+\fBCMAKE_GENERATOR_PLATFORM\fP \%<#\:envvar:CMAKE_GENERATOR_PLATFORM>
+.IP \(bu 2
+\fBCMAKE_GENERATOR_TOOLSET\fP \%<#\:envvar:CMAKE_GENERATOR_TOOLSET>
+.IP \(bu 2
+\fBCMAKE_GENERATOR_INSTANCE\fP \%<#\:envvar:CMAKE_GENERATOR_INSTANCE>
+.UNINDENT
+.SS CMAKE_GENERATOR_INSTANCE
+.sp
+Added in version 3.15.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Default value for \fBCMAKE_GENERATOR_INSTANCE\fP \%<#\:variable:CMAKE_GENERATOR_INSTANCE> if no Cache entry is
+present. This value is only applied if \fBCMAKE_GENERATOR\fP \%<#\:envvar:CMAKE_GENERATOR> is set.
+.SS CMAKE_GENERATOR_PLATFORM
+.sp
+Added in version 3.15.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Default value for \fBCMAKE_GENERATOR_PLATFORM\fP \%<#\:variable:CMAKE_GENERATOR_PLATFORM> if no Cache entry
+is present and no value is specified by \fBcmake \-A\fP \%<#\:cmdoption-cmake-A> option.
+This value is only applied if \fBCMAKE_GENERATOR\fP \%<#\:envvar:CMAKE_GENERATOR> is set.
+.SS CMAKE_GENERATOR_TOOLSET
+.sp
+Added in version 3.15.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Default value for \fBCMAKE_GENERATOR_TOOLSET\fP \%<#\:variable:CMAKE_GENERATOR_TOOLSET> if no Cache entry
+is present and no value is specified by \fBcmake \-T\fP \%<#\:cmdoption-cmake-T> option.
+This value is only applied if \fBCMAKE_GENERATOR\fP \%<#\:envvar:CMAKE_GENERATOR> is set.
+.SS CMAKE_INSTALL_MODE
+.sp
+Added in version 3.22.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The \fBCMAKE_INSTALL_MODE\fP environment variable allows users to operate
+CMake in an alternate mode of \fBfile(INSTALL)\fP \%<#\:install> and \fBinstall()\fP \%<#\:command:install>\&.
+.sp
+The default behavior for an installation is to copy a source file from a
+source directory into a destination directory. This environment variable
+however allows the user to override this behavior, causing CMake to create
+symbolic links instead.
+.SS Usage Scenarios
+.sp
+Installing symbolic links rather than copying files can help in the following
+ways:
+.INDENT 0.0
+.IP \(bu 2
+Conserving storage space because files do not have to be duplicated on disk.
+.IP \(bu 2
+Changes to the source of the symbolic link are seen at the install
+destination without having to re\-run the install step.
+.IP \(bu 2
+Editing through the link at the install destination will modify the source
+of the link. This may be useful when dealing with CMake project hierarchies,
+i.e. using \fBExternalProject\fP \%<#\:module:ExternalProject> and consistent source navigation and
+refactoring is desired across projects.
+.UNINDENT
+.SS Allowed Values
+.sp
+The following values are allowed for \fBCMAKE_INSTALL_MODE\fP:
+.INDENT 0.0
+.TP
+.B \fBCOPY\fP, empty or unset
+Duplicate the file at its destination.  This is the default behavior.
+.TP
+.B \fBABS_SYMLINK\fP
+Create an \fIabsolute\fP symbolic link to the source file at the destination.
+Halt with an error if the link cannot be created.
+.TP
+.B \fBABS_SYMLINK_OR_COPY\fP
+Like \fBABS_SYMLINK\fP but fall back to silently copying if the symlink
+couldn\(aqt be created.
+.TP
+.B \fBREL_SYMLINK\fP
+Create a \fIrelative\fP symbolic link to the source file at the destination.
+Halt with an error if the link cannot be created.
+.TP
+.B \fBREL_SYMLINK_OR_COPY\fP
+Like \fBREL_SYMLINK\fP but fall back to silently copying if the symlink
+couldn\(aqt be created.
+.TP
+.B \fBSYMLINK\fP
+Try as if through \fBREL_SYMLINK\fP and fall back to \fBABS_SYMLINK\fP if the
+referenced file cannot be expressed using a relative path.
+Halt with an error if the link cannot be created.
+.TP
+.B \fBSYMLINK_OR_COPY\fP
+Like \fBSYMLINK\fP but fall back to silently copying if the symlink couldn\(aqt
+be created.
+.UNINDENT
+.sp
+\fBNote:\fP
+.INDENT 0.0
+.INDENT 3.5
+A symbolic link consists of a reference file path rather than contents of its
+own, hence there are two ways to express the relation, either by a \fIrelative\fP
+or an \fIabsolute\fP path.
+.UNINDENT
+.UNINDENT
+.SS When To Set The Environment Variable
+.sp
+For the environment variable to take effect, it must be set during the correct
+build phase(s).
+.INDENT 0.0
+.IP \(bu 2
+If the project calls \fBfile(INSTALL)\fP \%<#\:install> directly, the environment
+variable must be set during the configuration phase.
+.IP \(bu 2
+In order to apply to \fBinstall()\fP \%<#\:command:install>, the environment variable must be
+set during installation.  This could be during a build if using the
+\fBinstall\fP or \fBpackage\fP build targets, or separate from the build when
+invoking an install or running \fBcpack\fP \%<#\:manual:cpack(1)> from the command
+line.
+.IP \(bu 2
+When using \fBExternalProject\fP \%<#\:module:ExternalProject>, it might be required during the build
+phase, since the external project\(aqs own configure, build and install steps
+will execute during the main project\(aqs build phase.
+.UNINDENT
+.sp
+Given the above, it is recommended to set the environment variable consistently
+across all phases (configure, build and install).
+.SS Caveats
+.sp
+Use this environment variable with caution. The following highlights some
+points to be considered:
+.INDENT 0.0
+.IP \(bu 2
+\fBCMAKE_INSTALL_MODE\fP only affects files, not directories.
+.IP \(bu 2
+Symbolic links are not available on all platforms.
+.IP \(bu 2
+The way this environment variable interacts with the install step of
+\fBExternalProject\fP \%<#\:module:ExternalProject> is more complex. For further details, see that
+module\(aqs documentation.
+.IP \(bu 2
+A symbolic link ties the destination to the source in a persistent way.
+Writing to either of the two affects both file system objects.
+This is in contrast to normal install behavior which only copies files as
+they were at the time the install was performed, with no enduring
+relationship between the source and destination of the install.
+.IP \(bu 2
+Combining \fBCMAKE_INSTALL_MODE\fP with \fBIOS_INSTALL_COMBINED\fP \%<#\:prop_tgt:IOS_INSTALL_COMBINED> is
+not supported.
+.IP \(bu 2
+Changing \fBCMAKE_INSTALL_MODE\fP from what it was on a previous run can lead
+to unexpected results.  Moving from a non\-symlinking mode to a symlinking
+mode will discard any previous file at the destination, but the reverse is
+not true.  Once a symlink exists at the destination, even if you switch to a
+non\-symlink mode, the symlink will continue to exist at the destination and
+will not be replaced by an actual file.
+.UNINDENT
+.SS CMAKE_INSTALL_PARALLEL_LEVEL
+.sp
+Added in version 3.31.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Specifies the default maximum number of concurrent processes to use when
+installing using \fBcmake \-\-install\fP\&.
+.sp
+This has no impact unless \fBINSTALL_PARALLEL\fP \%<#\:prop_gbl:INSTALL_PARALLEL> is enabled.
+.SS CMAKE_INSTALL_PREFIX
+.sp
+Added in version 3.29.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The \fBCMAKE_INSTALL_PREFIX\fP environment variable specifies a custom default
+value for the \fBCMAKE_INSTALL_PREFIX\fP \%<#\:variable:CMAKE_INSTALL_PREFIX> variable in place of the
+default values specified by CMake itself. The value specified must be an
+absolute path to a directory.
+.SS CMAKE_INTERMEDIATE_DIR_STRATEGY
+.sp
+Added in version 4.2.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+\fBCMAKE_INTERMEDIATE_DIR_STRATEGY\fP is a string specifying the strategy to use
+for target intermediate directories. It initializes the
+\fBCMAKE_INTERMEDIATE_DIR_STRATEGY\fP \%<#\:variable:CMAKE_INTERMEDIATE_DIR_STRATEGY> variable.
+.SS CMAKE_<LANG>_COMPILER_LAUNCHER
+.sp
+Added in version 3.17.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Default compiler launcher to use for the specified language. Will only be used
+by CMake to initialize the variable on the first configuration. Afterwards, it
+is available through the cache setting of the variable of the same name. For
+any configuration run (including the first), the environment variable will be
+ignored if the \fBCMAKE_<LANG>_COMPILER_LAUNCHER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER_LAUNCHER> variable is defined.
+.SS CMAKE_<LANG>_IMPLICIT_LINK_DIRECTORIES_EXCLUDE
+.sp
+Added in version 3.27.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+A semicolon\-separated list \%<#\:cmake-language-lists> of directories
+to exclude from the \fBCMAKE_<LANG>_IMPLICIT_LINK_DIRECTORIES\fP \%<#\:variable:CMAKE_<LANG>_IMPLICIT_LINK_DIRECTORIES>
+variable when it is automatically detected from the \fB<LANG>\fP compiler.
+.sp
+This may be used to work around misconfigured compiler drivers that pass
+extraneous implicit link directories to their linker.
+.sp
+See also the \fBCMAKE_<LANG>_IMPLICIT_LINK_LIBRARIES_EXCLUDE\fP \%<#\:envvar:CMAKE_<LANG>_IMPLICIT_LINK_LIBRARIES_EXCLUDE>
+environment variable.
+.SS CMAKE_<LANG>_IMPLICIT_LINK_LIBRARIES_EXCLUDE
+.sp
+Added in version 4.1.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+A semicolon\-separated list \%<#\:cmake-language-lists> of libraries
+to exclude from the \fBCMAKE_<LANG>_IMPLICIT_LINK_LIBRARIES\fP \%<#\:variable:CMAKE_<LANG>_IMPLICIT_LINK_LIBRARIES>
+variable when it is automatically detected from the \fB<LANG>\fP compiler.
+.sp
+This may be used to work around detection limitations that result in
+extraneous implicit link libraries, e.g., when using compiler driver
+flags that affect the set of implicitly linked libraries.
+.sp
+See also the \fBCMAKE_<LANG>_IMPLICIT_LINK_DIRECTORIES_EXCLUDE\fP \%<#\:envvar:CMAKE_<LANG>_IMPLICIT_LINK_DIRECTORIES_EXCLUDE>
+environment variable.
+.SS CMAKE_<LANG>_LINKER_LAUNCHER
+.sp
+Added in version 3.21.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Default launcher to use when linking a target of the specified language. Will
+only be used by CMake to initialize the variable on the first configuration.
+Afterwards, it is available through the cache setting of the variable of the
+same name. For any configuration run (including the first), the environment
+variable will be ignored if the \fBCMAKE_<LANG>_LINKER_LAUNCHER\fP \%<#\:variable:CMAKE_<LANG>_LINKER_LAUNCHER>
+variable is defined.
+.SS CMAKE_MSVCIDE_RUN_PATH
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Extra PATH locations for custom commands when using
+Visual Studio Generators \%<#\:visual-studio-generators>\&.
+.sp
+The \fBCMAKE_MSVCIDE_RUN_PATH\fP environment variable sets the default value for
+the \fBCMAKE_MSVCIDE_RUN_PATH\fP \%<#\:variable:CMAKE_MSVCIDE_RUN_PATH> variable if not already explicitly set.
+.SS CMAKE_NO_VERBOSE
+.sp
+Added in version 3.14.
+
+.sp
+Disables verbose output from CMake when \fBVERBOSE\fP \%<#\:envvar:VERBOSE> environment variable
+is set.
+.sp
+Only your build tool of choice will still print verbose output when you start
+to actually build your project.
+.SS CMAKE_OSX_ARCHITECTURES
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Target specific architectures for macOS.
+.sp
+The \fBCMAKE_OSX_ARCHITECTURES\fP environment variable sets the default value for
+the \fBCMAKE_OSX_ARCHITECTURES\fP \%<#\:variable:CMAKE_OSX_ARCHITECTURES> variable. See
+\fBOSX_ARCHITECTURES\fP \%<#\:prop_tgt:OSX_ARCHITECTURES> for more information.
+.SS CMAKE_TEST_LAUNCHER
+.sp
+Added in version 3.29.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The default value for the \fBCMAKE_TEST_LAUNCHER\fP \%<#\:variable:CMAKE_TEST_LAUNCHER> variable when there
+is no explicit configuration given on the first run while creating a new
+build tree.  On later runs in an existing build tree the value persists in
+the cache as \fBCMAKE_TEST_LAUNCHER\fP \%<#\:variable:CMAKE_TEST_LAUNCHER>\&.
+.SS CMAKE_TOOLCHAIN_FILE
+.sp
+Added in version 3.21.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+The \fBCMAKE_TOOLCHAIN_FILE\fP environment variable specifies a default value
+for the \fBCMAKE_TOOLCHAIN_FILE\fP \%<#\:variable:CMAKE_TOOLCHAIN_FILE> variable when there is no explicit
+configuration given on the first run while creating a new build tree.
+On later runs in an existing build tree the value persists in the cache
+as \fBCMAKE_TOOLCHAIN_FILE\fP \%<#\:variable:CMAKE_TOOLCHAIN_FILE>\&.
+.SS DESTDIR
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+On UNIX one can use the \fBDESTDIR\fP mechanism in order to relocate the
+whole installation.  \fBDESTDIR\fP means DESTination DIRectory.  It is
+commonly used by packagers to install software in a staging directory.
+.sp
+For example, running
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.EX
+make DESTDIR=/package/stage install
+.EE
+.UNINDENT
+.UNINDENT
+.sp
+will install the software using the installation prefix, e.g. \fB/usr/local\fP,
+prepended with the \fBDESTDIR\fP value which gives \fB/package/stage/usr/local\fP\&.
+The packaging tool may then construct the package from the content of the
+\fB/package/stage\fP directory.
+.sp
+See the \fBCMAKE_INSTALL_PREFIX\fP \%<#\:variable:CMAKE_INSTALL_PREFIX> variable to control the
+installation prefix when configuring a build tree.  Or, when using
+the \fBcmake(1)\fP \%<#\:manual:cmake(1)> command\-line tool\(aqs \fB\-\-install\fP \%<#\:cmdoption-cmake-install>
+mode, one may specify a different prefix using the
+\fB\-\-prefix\fP \%<#\:cmdoption-cmake--install-0> option.
+.sp
+\fBNote:\fP
+.INDENT 0.0
+.INDENT 3.5
+\fBDESTDIR\fP may not be used on Windows because installation
+prefix usually contains a drive letter like in \fBC:/Program Files\fP
+which cannot be prepended with some other prefix.
+.UNINDENT
+.UNINDENT
+.SS LDFLAGS
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Will only be used by CMake on the first configuration to determine the default
+linker flags, after which the value for \fBLDFLAGS\fP is stored in the cache
+as \fBCMAKE_EXE_LINKER_FLAGS_INIT\fP \%<#\:variable:CMAKE_EXE_LINKER_FLAGS_INIT>,
+\fBCMAKE_SHARED_LINKER_FLAGS_INIT\fP \%<#\:variable:CMAKE_SHARED_LINKER_FLAGS_INIT>, and
+\fBCMAKE_MODULE_LINKER_FLAGS_INIT\fP \%<#\:variable:CMAKE_MODULE_LINKER_FLAGS_INIT>\&. For any configuration run
+(including the first), the environment variable will be ignored if the
+equivalent  \fBCMAKE_<TYPE>_LINKER_FLAGS_INIT\fP variable is defined.
+.SS MACOSX_DEPLOYMENT_TARGET
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Specify the minimum version of macOS on which the target binaries are
+to be deployed.
+.sp
+The \fBMACOSX_DEPLOYMENT_TARGET\fP environment variable sets the default value for
+the \fBCMAKE_OSX_DEPLOYMENT_TARGET\fP \%<#\:variable:CMAKE_OSX_DEPLOYMENT_TARGET> variable.
+.SS <PackageName>_ROOT
+.sp
+Added in version 3.12.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Calls to \fBfind_package(<PackageName>)\fP \%<#\:command:find_package> will search in prefixes
+specified by the \fB<PackageName>_ROOT\fP environment variable, where
+\fB<PackageName>\fP is the (case\-preserved) name given to the
+\fBfind_package()\fP \%<#\:command:find_package> call and \fB_ROOT\fP is literal.
+For example, \fBfind_package(Foo)\fP will search prefixes specified in the
+\fBFoo_ROOT\fP environment variable (if set).  See policy \fBCMP0074\fP \%<#\:policy:CMP0074>\&.
+.sp
+This variable may hold a single prefix or a list of prefixes separated
+by \fB:\fP on UNIX or \fB;\fP on Windows (the same as the \fBPATH\fP environment
+variable convention on those platforms).
+.sp
+See also the \fB<PackageName>_ROOT\fP \%<#\:variable:<PackageName>_ROOT> CMake variable.
+.INDENT 0.0
+.TP
+.B <PACKAGENAME>_ROOT
+Added in version 3.27.
+
+.sp
+Calls to \fBfind_package(<PackageName>)\fP \%<#\:command:find_package> will also search in
+prefixes specified by the upper\-case \fB<PACKAGENAME>_ROOT\fP environment
+variable.  See policy \fBCMP0144\fP \%<#\:policy:CMP0144>\&.
+.UNINDENT
+.sp
+\fBNote:\fP
+.INDENT 0.0
+.INDENT 3.5
+Note that the \fB<PackageName>_ROOT\fP and \fB<PACKAGENAME>_ROOT\fP
+environment variables are distinct only on platforms that have
+case\-sensitive environments.
+.UNINDENT
+.UNINDENT
+.SS VERBOSE
+.sp
+Added in version 3.14.
+
+.sp
+Activates verbose output from CMake and your build tools of choice when
+you start to actually build your project.
+.sp
+Note that any given value is ignored. It\(aqs just checked for existence.
+.sp
+See also Build Tool Mode \%<#\:build-tool-mode> and
+\fBCMAKE_NO_VERBOSE\fP \%<#\:envvar:CMAKE_NO_VERBOSE> environment variable
+.SH ENVIRONMENT VARIABLES FOR LANGUAGES
+.SS ASM<DIALECT>
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Preferred executable for compiling a specific dialect of assembly language
+files. \fBASM<DIALECT>\fP can be one of:
+.INDENT 0.0
+.IP \(bu 2
+\fBASM\fP
+.IP \(bu 2
+\fBASM_NASM\fP (Netwide Assembler)
+.IP \(bu 2
+\fBASM_MASM\fP (Microsoft Assembler)
+.IP \(bu 2
+\fBASM_MARMASM\fP (Microsoft ARM Assembler)
+.IP \(bu 2
+\fBASM_POASM\fP (Pelles Macro Assembler)
+.IP \(bu 2
+\fBASM\-ATT\fP (Assembler AT&T)
+.UNINDENT
+.sp
+Will only be used by CMake on the first configuration to determine
+\fBASM<DIALECT>\fP compiler, after which the value for \fBASM<DIALECT>\fP is stored
+in the cache as
+\fBCMAKE_ASM<DIALECT>_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER>\&. For subsequent
+configuration runs, the environment variable will be ignored in favor of
+\fBCMAKE_ASM<DIALECT>_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER>\&.
+.sp
+\fBNote:\fP
+.INDENT 0.0
+.INDENT 3.5
+Options that are required to make the compiler work correctly can be included;
+they can not be changed.
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.EX
+$ export ASM=\(dqcustom\-compiler \-\-arg1 \-\-arg2\(dq
+.EE
+.UNINDENT
+.UNINDENT
+.SS ASM<DIALECT>FLAGS
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Add default compilation flags to be used when compiling a specific dialect
+of an assembly language.  \fBASM<DIALECT>FLAGS\fP can be one of:
+.INDENT 0.0
+.IP \(bu 2
+\fBASMFLAGS\fP
+.IP \(bu 2
+\fBASM_NASMFLAGS\fP
+.IP \(bu 2
+\fBASM_MASMFLAGS\fP
+.IP \(bu 2
+\fBASM_MARMASMFLAGS\fP
+.IP \(bu 2
+\fBASM_POASMFLAGS\fP
+.IP \(bu 2
+\fBASM\-ATTFLAGS\fP
+.UNINDENT
+.sp
+CMake uses this environment variable value, in combination with its own
+builtin default flags for the toolchain, to initialize and store the
+\fBCMAKE_ASM<DIALECT>_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> cache entry.
+This occurs the first time a build tree is configured for language \fBASM<DIALECT>\fP\&.
+For any configuration run (including the first), the environment variable
+will be ignored if the \fBCMAKE_ASM<DIALECT>_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> variable is already defined.
+.sp
+See also \fBCMAKE_ASM<DIALECT>_FLAGS_INIT\fP \%<#\:variable:CMAKE_<LANG>_FLAGS_INIT>\&.
+.SS CC
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Preferred executable for compiling \fBC\fP language files. Will only be used by
+CMake on the first configuration to determine \fBC\fP compiler, after which the
+value for \fBCC\fP is stored in the cache as
+\fBCMAKE_C_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER>\&. For any configuration run
+(including the first), the environment variable will be ignored if the
+\fBCMAKE_C_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER> variable is defined.
+.sp
+\fBNote:\fP
+.INDENT 0.0
+.INDENT 3.5
+Options that are required to make the compiler work correctly can be included;
+they can not be changed.
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.EX
+$ export CC=\(dqcustom\-compiler \-\-arg1 \-\-arg2\(dq
+.EE
+.UNINDENT
+.UNINDENT
+.SS CFLAGS
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Add default compilation flags to be used when compiling \fBC\fP files.
+.sp
+CMake uses this environment variable value, in combination with its own
+builtin default flags for the toolchain, to initialize and store the
+\fBCMAKE_C_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> cache entry.
+This occurs the first time a build tree is configured for language \fBC\fP\&.
+For any configuration run (including the first), the environment variable
+will be ignored if the \fBCMAKE_C_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> variable is already defined.
+.sp
+See also \fBCMAKE_C_FLAGS_INIT\fP \%<#\:variable:CMAKE_<LANG>_FLAGS_INIT>\&.
+.SS CSFLAGS
+.sp
+Added in version 3.9.2.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Add default compilation flags to be used when compiling \fBCSharp\fP files.
+.sp
+CMake uses this environment variable value, in combination with its own
+builtin default flags for the toolchain, to initialize and store the
+\fBCMAKE_CSharp_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> cache entry.
+This occurs the first time a build tree is configured for language \fBCSharp\fP\&.
+For any configuration run (including the first), the environment variable
+will be ignored if the \fBCMAKE_CSharp_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> variable is already defined.
+.sp
+See also \fBCMAKE_CSharp_FLAGS_INIT\fP \%<#\:variable:CMAKE_<LANG>_FLAGS_INIT>\&.
+.SS CUDAARCHS
+.sp
+Added in version 3.20.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Value used to initialize \fBCMAKE_CUDA_ARCHITECTURES\fP \%<#\:variable:CMAKE_CUDA_ARCHITECTURES> on the first
+configuration. Subsequent runs will use the value stored in the cache.
+.sp
+This is a semicolon\-separated list of architectures as described in
+\fBCUDA_ARCHITECTURES\fP \%<#\:prop_tgt:CUDA_ARCHITECTURES>\&.
+.SS CUDACXX
+.sp
+Added in version 3.8.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Preferred executable for compiling \fBCUDA\fP language files. Will only be used by
+CMake on the first configuration to determine \fBCUDA\fP compiler, after which the
+value for \fBCUDA\fP is stored in the cache as
+\fBCMAKE_CUDA_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER>\&. For any configuration
+run (including the first), the environment variable will be ignored if the
+\fBCMAKE_CUDA_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER> variable is defined.
+.sp
+\fBNote:\fP
+.INDENT 0.0
+.INDENT 3.5
+Options that are required to make the compiler work correctly can be included;
+they can not be changed.
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.EX
+$ export CUDACXX=\(dqcustom\-compiler \-\-arg1 \-\-arg2\(dq
+.EE
+.UNINDENT
+.UNINDENT
+.SS CUDAFLAGS
+.sp
+Added in version 3.8.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Add default compilation flags to be used when compiling \fBCUDA\fP files.
+.sp
+CMake uses this environment variable value, in combination with its own
+builtin default flags for the toolchain, to initialize and store the
+\fBCMAKE_CUDA_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> cache entry.
+This occurs the first time a build tree is configured for language \fBCUDA\fP\&.
+For any configuration run (including the first), the environment variable
+will be ignored if the \fBCMAKE_CUDA_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> variable is already defined.
+.sp
+See also \fBCMAKE_CUDA_FLAGS_INIT\fP \%<#\:variable:CMAKE_<LANG>_FLAGS_INIT>\&.
+.SS CUDAHOSTCXX
+.sp
+Added in version 3.8.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Preferred executable for compiling host code when compiling \fBCUDA\fP
+language files. Will only be used by CMake on the first configuration to
+determine \fBCUDA\fP host compiler, after which the value for \fBCUDAHOSTCXX\fP is
+stored in the cache as
+\fBCMAKE_CUDA_HOST_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_HOST_COMPILER>\&.
+This environment variable is preferred over
+\fBCMAKE_CUDA_HOST_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_HOST_COMPILER>\&.
+.sp
+This environment variable is primarily meant for use with projects that
+enable \fBCUDA\fP as a first\-class language.
+.sp
+\fBNote:\fP
+.INDENT 0.0
+.INDENT 3.5
+Ignored when using Visual Studio Generators \%<#\:visual-studio-generators>\&.
+.UNINDENT
+.UNINDENT
+.sp
+Added in version 3.13: The \fBFindCUDA\fP \%<#\:module:FindCUDA>
+module will use this variable to initialize its \fBCUDA_HOST_COMPILER\fP setting.
+
+.SS CXX
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Preferred executable for compiling \fBCXX\fP language files. Will only be used by
+CMake on the first configuration to determine \fBCXX\fP compiler, after which the
+value for \fBCXX\fP is stored in the cache as
+\fBCMAKE_CXX_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER>\&. For any configuration
+run (including the first), the environment variable will be ignored if the
+\fBCMAKE_CXX_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER> variable is defined.
+.sp
+\fBNote:\fP
+.INDENT 0.0
+.INDENT 3.5
+Options that are required to make the compiler work correctly can be included;
+they can not be changed.
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.EX
+$ export CXX=\(dqcustom\-compiler \-\-arg1 \-\-arg2\(dq
+.EE
+.UNINDENT
+.UNINDENT
+.SS CXXFLAGS
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Add default compilation flags to be used when compiling \fBCXX\fP (C++) files.
+.sp
+CMake uses this environment variable value, in combination with its own
+builtin default flags for the toolchain, to initialize and store the
+\fBCMAKE_CXX_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> cache entry.
+This occurs the first time a build tree is configured for language \fBCXX\fP\&.
+For any configuration run (including the first), the environment variable
+will be ignored if the \fBCMAKE_CXX_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> variable is already defined.
+.sp
+See also \fBCMAKE_CXX_FLAGS_INIT\fP \%<#\:variable:CMAKE_<LANG>_FLAGS_INIT>\&.
+.SS FC
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Preferred executable for compiling \fBFortran\fP language files. Will only be used
+by CMake on the first configuration to determine \fBFortran\fP compiler, after
+which the value for \fBFortran\fP is stored in the cache as
+\fBCMAKE_Fortran_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER>\&. For any
+configuration run (including the first), the environment variable will be
+ignored if the \fBCMAKE_Fortran_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER>
+variable is defined.
+.sp
+\fBNote:\fP
+.INDENT 0.0
+.INDENT 3.5
+Options that are required to make the compiler work correctly can be included;
+they can not be changed.
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.EX
+$ export FC=\(dqcustom\-compiler \-\-arg1 \-\-arg2\(dq
+.EE
+.UNINDENT
+.UNINDENT
+.SS FFLAGS
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Add default compilation flags to be used when compiling \fBFortran\fP files.
+.sp
+CMake uses this environment variable value, in combination with its own
+builtin default flags for the toolchain, to initialize and store the
+\fBCMAKE_Fortran_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> cache entry.
+This occurs the first time a build tree is configured for language \fBFortran\fP\&.
+For any configuration run (including the first), the environment variable
+will be ignored if the \fBCMAKE_Fortran_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> variable is already defined.
+.sp
+See also \fBCMAKE_Fortran_FLAGS_INIT\fP \%<#\:variable:CMAKE_<LANG>_FLAGS_INIT>\&.
+.SS HIPCXX
+.sp
+Added in version 3.21.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Preferred executable for compiling \fBHIP\fP language files. Will only be used by
+CMake on the first configuration to determine \fBHIP\fP compiler, after which the
+value for \fBHIP\fP is stored in the cache as
+\fBCMAKE_HIP_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER>\&. For any configuration
+run (including the first), the environment variable will be ignored if the
+\fBCMAKE_HIP_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER> variable is defined.
+.SS HIPFLAGS
+.sp
+Added in version 3.21.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Add default compilation flags to be used when compiling \fBHIP\fP files.
+.sp
+CMake uses this environment variable value, in combination with its own
+builtin default flags for the toolchain, to initialize and store the
+\fBCMAKE_HIP_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> cache entry.
+This occurs the first time a build tree is configured for language \fBHIP\fP\&.
+For any configuration run (including the first), the environment variable
+will be ignored if the \fBCMAKE_HIP_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> variable is already defined.
+.sp
+See also \fBCMAKE_HIP_FLAGS_INIT\fP \%<#\:variable:CMAKE_<LANG>_FLAGS_INIT>\&.
+.SS HIPHOSTCXX
+.sp
+Added in version 3.28.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Preferred executable for compiling host code when compiling \fBHIP\fP
+language files with the NVIDIA CUDA Compiler. Will only be used by CMake
+on the first configuration to determine \fBHIP\fP host compiler, after which
+the value for \fBHIPHOSTCXX\fP is stored in the cache as
+\fBCMAKE_HIP_HOST_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_HOST_COMPILER>\&.
+.sp
+This environment variable is primarily meant for use with projects that
+enable \fBHIP\fP as a first\-class language.
+.sp
+\fBNote:\fP
+.INDENT 0.0
+.INDENT 3.5
+Ignored when using Visual Studio Generators \%<#\:visual-studio-generators>\&.
+.UNINDENT
+.UNINDENT
+.SS ISPC
+.sp
+Added in version 3.19.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Preferred executable for compiling \fBISPC\fP language files. Will only be used by
+CMake on the first configuration to determine \fBISPC\fP compiler, after which the
+value for \fBISPC\fP is stored in the cache as
+\fBCMAKE_ISPC_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER>\&. For any configuration
+run (including the first), the environment variable will be ignored if the
+\fBCMAKE_ISPC_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER> variable is defined.
+.SS ISPCFLAGS
+.sp
+Added in version 3.19.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Add default compilation flags to be used when compiling \fBISPC\fP files.
+.sp
+CMake uses this environment variable value, in combination with its own
+builtin default flags for the toolchain, to initialize and store the
+\fBCMAKE_ISPC_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> cache entry.
+This occurs the first time a build tree is configured for language \fBISPC\fP\&.
+For any configuration run (including the first), the environment variable
+will be ignored if the \fBCMAKE_ISPC_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> variable is already defined.
+.sp
+See also \fBCMAKE_ISPC_FLAGS_INIT\fP \%<#\:variable:CMAKE_<LANG>_FLAGS_INIT>\&.
+.SS OBJC
+.sp
+Added in version 3.16.7.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Preferred executable for compiling \fBOBJC\fP language files. Will only be used
+by CMake on the first configuration to determine \fBOBJC\fP compiler, after
+which the value for \fBOBJC\fP is stored in the cache as
+\fBCMAKE_OBJC_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER>\&. For any configuration
+run (including the first), the environment variable will be ignored if the
+\fBCMAKE_OBJC_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER> variable is defined.
+.sp
+If \fBOBJC\fP is not defined, the \fBCC\fP \%<#\:envvar:CC> environment variable will
+be checked instead.
+.SS OBJCFLAGS
+.sp
+Added in version 3.16.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Add default compilation flags to be used when compiling \fBObjective C\fP files.
+.sp
+CMake uses this environment variable value, in combination with its own
+builtin default flags for the toolchain, to initialize and store the
+\fBCMAKE_OBJC_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> cache entry.
+This occurs the first time a build tree is configured for language \fBOBJC\fP\&.
+For any configuration run (including the first), the environment variable
+will be ignored if the \fBCMAKE_OBJC_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> variable is already defined.
+.sp
+See also \fBCMAKE_OBJC_FLAGS_INIT\fP \%<#\:variable:CMAKE_<LANG>_FLAGS_INIT>\&.
+.SS OBJCXX
+.sp
+Added in version 3.16.7.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Preferred executable for compiling \fBOBJCXX\fP language files. Will only be used
+by CMake on the first configuration to determine \fBOBJCXX\fP compiler, after
+which the value for \fBOBJCXX\fP is stored in the cache as
+\fBCMAKE_OBJCXX_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER>\&. For any configuration
+run (including the first), the environment variable will be ignored if the
+\fBCMAKE_OBJCXX_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER> variable is defined.
+.sp
+If \fBOBJCXX\fP is not defined, the \fBCXX\fP \%<#\:envvar:CXX> environment variable will
+be checked instead.
+.SS OBJCXXFLAGS
+.sp
+Added in version 3.16.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Add default compilation flags to be used when compiling \fBObjective C++\fP (.mm) files.
+.sp
+CMake uses this environment variable value, in combination with its own
+builtin default flags for the toolchain, to initialize and store the
+\fBCMAKE_OBJCXX_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> cache entry.
+This occurs the first time a build tree is configured for language \fBOBJCXX\fP\&.
+For any configuration run (including the first), the environment variable
+will be ignored if the \fBCMAKE_OBJCXX_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> variable is already defined.
+.sp
+See also \fBCMAKE_OBJCXX_FLAGS_INIT\fP \%<#\:variable:CMAKE_<LANG>_FLAGS_INIT>\&.
+.SS RC
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Preferred executable for compiling \fBresource\fP files. Will only be used by CMake
+on the first configuration to determine \fBresource\fP compiler, after which the
+value for \fBRC\fP is stored in the cache as
+\fBCMAKE_RC_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER>\&. For any configuration run
+(including the first), the environment variable will be ignored if the
+\fBCMAKE_RC_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER> variable is defined.
+.sp
+\fBNote:\fP
+.INDENT 0.0
+.INDENT 3.5
+Options that are required to make the compiler work correctly can be included;
+they can not be changed.
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.EX
+$ export RC=\(dqcustom\-compiler \-\-arg1 \-\-arg2\(dq
+.EE
+.UNINDENT
+.UNINDENT
+.SS RCFLAGS
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Add default compilation flags to be used when compiling \fBRC\fP (resource) files.
+.sp
+CMake uses this environment variable value, in combination with its own
+builtin default flags for the toolchain, to initialize and store the
+\fBCMAKE_RC_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> cache entry.
+This occurs the first time a build tree is configured for language \fBRC\fP\&.
+For any configuration run (including the first), the environment variable
+will be ignored if the \fBCMAKE_RC_FLAGS\fP \%<#\:variable:CMAKE_<LANG>_FLAGS> variable is already defined.
+.sp
+See also \fBCMAKE_RC_FLAGS_INIT\fP \%<#\:variable:CMAKE_<LANG>_FLAGS_INIT>\&.
+.SS SWIFTC
+.sp
+Added in version 3.15.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Preferred executable for compiling \fBSwift\fP language files. Will only be used by
+CMake on the first configuration to determine \fBSwift\fP compiler, after which the
+value for \fBSWIFTC\fP is stored in the cache as
+\fBCMAKE_Swift_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER>\&. For any configuration run
+(including the first), the environment variable will be ignored if the
+\fBCMAKE_Swift_COMPILER\fP \%<#\:variable:CMAKE_<LANG>_COMPILER> variable is defined.
+.sp
+\fBNote:\fP
+.INDENT 0.0
+.INDENT 3.5
+Options that are required to make the compiler work correctly can be included;
+they can not be changed.
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.EX
+$ export SWIFTC=\(dqcustom\-compiler \-\-arg1 \-\-arg2\(dq
+.EE
+.UNINDENT
+.UNINDENT
+.SH ENVIRONMENT VARIABLES FOR CTEST
+.SS CTEST_INTERACTIVE_DEBUG_MODE
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Environment variable that will exist and be set to \fB1\fP when a test executed
+by \fBctest(1)\fP \%<#\:manual:ctest(1)> is run in interactive mode.
+.SS CTEST_NO_TESTS_ACTION
+.sp
+Added in version 3.26.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Environment variable that controls how \fBctest\fP \%<#\:manual:ctest(1)> handles
+cases when there are no tests to run. Possible values are: \fBerror\fP,
+\fBignore\fP, empty or unset.
+.sp
+The \fB\-\-no\-tests=<action>\fP \%<#\:cmdoption-ctest-no-tests> option to
+\fBctest\fP \%<#\:manual:ctest(1)> overrides this environment variable if both
+are given.
+.SS CTEST_OUTPUT_ON_FAILURE
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Boolean environment variable that controls if the output should be logged for
+failed tests. Set the value to \fB1\fP, \fBTrue\fP, or \fBON\fP to enable output on failure.
+See \fBctest(1)\fP \%<#\:manual:ctest(1)> for more information on controlling output of failed
+tests.
+.SS CTEST_PARALLEL_LEVEL
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Specify the number of tests for CTest to run in parallel.
+For example, if \fBCTEST_PARALLEL_LEVEL\fP is set to 8, CTest will run
+up to 8 tests concurrently as if \fBctest\fP were invoked with the
+\fB\-\-parallel 8\fP \%<#\:cmdoption-ctest-j> option.
+.sp
+Changed in version 3.29: The value may be empty, or \fB0\fP, to let ctest use a default level of
+parallelism, or unbounded parallelism, respectively, as documented by
+the \fBctest \-\-parallel\fP \%<#\:cmdoption-ctest-j> option.
+.sp
+CTest will interpret a whitespace\-only string as empty.
+.sp
+In CMake 3.28 and earlier, an empty or \fB0\fP value was equivalent to \fB1\fP\&.
+
+.sp
+See \fBctest(1)\fP \%<#\:manual:ctest(1)> for more information on parallel test execution.
+.SS CTEST_PROGRESS_OUTPUT
+.sp
+Added in version 3.13.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Boolean environment variable that affects how \fBctest\fP \%<#\:manual:ctest(1)>
+command output reports overall progress.  When set to \fB1\fP, \fBTRUE\fP, \fBON\fP or anything
+else that evaluates to boolean true, progress is reported by repeatedly
+updating the same line.  This greatly reduces the overall verbosity, but is
+only supported when output is sent directly to a terminal.  If the environment
+variable is not set or has a value that evaluates to false, output is reported
+normally with each test having its own start and end lines logged to the
+output.
+.sp
+The \fB\-\-progress\fP \%<#\:cmdoption-ctest-progress> option to \fBctest\fP \%<#\:manual:ctest(1)>
+overrides this environment variable if both are given.
+.SS CTEST_USE_INSTRUMENTATION
+.sp
+Added in version 4.3.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Setting this environment variable to \fB1\fP, \fBTrue\fP, or \fBON\fP enables
+\fBinstrumentation\fP \%<#\:manual:cmake-instrumentation(7)> for CTest in
+Dashboard Client \%<#\:dashboard-client> mode.
+.SS CTEST_USE_LAUNCHERS_DEFAULT
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Initializes the \fBCTEST_USE_LAUNCHERS\fP \%<#\:variable:CTEST_USE_LAUNCHERS> variable if not already defined.
+.SS CTEST_USE_VERBOSE_INSTRUMENTATION
+.sp
+Added in version 4.3.
+
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Setting this environment variable to \fB1\fP, \fBTrue\fP, or \fBON\fP causes CTest to
+report the full command line (including arguments) to CDash for each
+instrumented command. By default, CTest truncates the command line at the first
+space.
+.sp
+See also \fBCTEST_USE_INSTRUMENTATION\fP \%<#\:envvar:CTEST_USE_INSTRUMENTATION>
+.SS DASHBOARD_TEST_FROM_CTEST
+.sp
+This is a CMake Environment Variable \%<#\:cmake-language-environment-variables>\&. Its initial value is taken from
+the calling process environment.
+.sp
+Environment variable that will exist when a test executed by \fBctest(1)\fP \%<#\:manual:ctest(1)>
+is run in non\-interactive mode.  The value will be equal to
+\fBCMAKE_VERSION\fP \%<#\:variable:CMAKE_VERSION>\&.
+.SH ENVIRONMENT VARIABLES FOR THE CMAKE CURSES INTERFACE
+.SS CCMAKE_COLORS
+.sp
+Added in version 3.18.
+
+.sp
+Determines what colors are used by the CMake curses interface,
+when run on a terminal that supports colors.
+The syntax follows the same conventions as \fBLS_COLORS\fP;
+that is, a list of key/value pairs separated by \fB:\fP\&.
+.sp
+Keys are a single letter corresponding to a CMake cache variable type:
+.INDENT 0.0
+.IP \(bu 2
+\fBs\fP: A \fBSTRING\fP\&.
+.IP \(bu 2
+\fBp\fP: A \fBFILEPATH\fP\&.
+.IP \(bu 2
+\fBc\fP: A value which has an associated list of choices.
+.IP \(bu 2
+\fBy\fP: A \fBBOOL\fP which has a true\-like value (e.g. \fBON\fP, \fBYES\fP).
+.IP \(bu 2
+\fBn\fP: A \fBBOOL\fP which has a false\-like value (e.g. \fBOFF\fP, \fBNO\fP).
+.UNINDENT
+.sp
+Values are an integer number that specifies what color to use.
+\fB0\fP is black (you probably don\(aqt want to use that).
+Others are determined by your terminal\(aqs color support.
+Most (color) terminals will support at least 8 or 16 colors.
+Some will support up to 256 colors. The colors will likely match
+this chart \%<https://\:upload\:.wikimedia\:.org/\:wikipedia/\:commons/\:1/\:15/\:Xterm_256color_chart\:.svg>,
+although the first 16 colors may match the original
+CGA color palette \%<https://\:en\:.wikipedia\:.org/\:wiki/\:Color_Graphics_Adapter#\:Color_palette>\&.
+(Many modern terminal emulators also allow their color palette,
+at least for the first 16 colors, to be configured by the user.)
+.sp
+Note that fairly minimal checking is done for bad colors
+(although a value higher than what curses believes your terminal supports
+will be silently ignored) or bad syntax.
+.sp
+For example:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.EX
+CCMAKE_COLORS=\(aqs=39:p=220:c=207:n=196:y=46\(aq
+.EE
+.UNINDENT
+.UNINDENT
+.SH Copyright
+2000-2026 Kitware, Inc. and Contributors
+.\" End of generated man page.
