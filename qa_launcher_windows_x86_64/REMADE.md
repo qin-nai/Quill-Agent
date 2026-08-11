@@ -54,7 +54,7 @@
 ---
 
 ## 文件结构
-
+```
 ./
 ├── PortableGit/ # 便携版 Git（自动使用）
 ├── cmake-4.4.2-windows-x86_64/ # 便携版 CMake
@@ -64,9 +64,10 @@
 │ ├── webui/
 │ └── build/Release/hermes_server.exe # 编译产物
 ├── qa_launcher.exe # 启动器主程序
+├── main.py
 ├── upset.py # 编译脚本（供启动器调用）
 └── localgui.7z # 原始压缩包（解压后自动删除）
-
+```
 ---
 
 ## 注意事项
@@ -122,6 +123,5 @@ python main.py
 
 许可
 --
-
 本项目遵循主仓库的许可
-```
+
